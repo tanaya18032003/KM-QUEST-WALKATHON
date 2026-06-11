@@ -207,10 +207,11 @@
   <div class="sec">
     <div class="sec-hd"><h2><span class="ico">📅</span>Challenge Timeline</h2></div>
     <div class="timeline">
-      <div class="wk" id="wk1"><div class="wl">W1</div><div class="wd2">1 – 6 Jun</div><div class="ws">—</div></div>
-      <div class="wk" id="wk2"><div class="wl">W2</div><div class="wd2">8 – 13 Jun</div><div class="ws">—</div></div>
-      <div class="wk" id="wk3"><div class="wl">W3</div><div class="wd2">15 – 20 Jun</div><div class="ws">—</div></div>
-      <div class="wk" id="wk4"><div class="wl">W4</div><div class="wd2">22 – 27 Jun</div><div class="ws">—</div></div>
+      <!-- CHANGE 2: fixed end dates — each week now includes its 7th day -->
+      <div class="wk" id="wk1"><div class="wl">W1</div><div class="wd2">1 – 7 Jun</div><div class="ws">—</div></div>
+      <div class="wk" id="wk2"><div class="wl">W2</div><div class="wd2">8 – 14 Jun</div><div class="ws">—</div></div>
+      <div class="wk" id="wk3"><div class="wl">W3</div><div class="wd2">15 – 21 Jun</div><div class="ws">—</div></div>
+      <div class="wk" id="wk4"><div class="wl">W4</div><div class="wd2">22 – 28 Jun</div><div class="ws">—</div></div>
       <div class="wk" id="wk5"><div class="wl">W5</div><div class="wd2">29 – 30 Jun</div><div class="ws">—</div></div>
     </div>
   </div>
@@ -383,11 +384,12 @@ var TMETA = {
   "Aero, FC/EC, Crash & PM": {c:"#059669", bg:"#ecfdf5", n:14},
   "MBS & CTT":               {c:"#d97706", bg:"#fffbeb", n:25}
 };
+// CHANGE 3: corrected week end dates (6→7, 13→14, 20→21, 27→28)
 var WEEKS = [
-  {id:"wk1",s:new Date(2026,5,1), e:new Date(2026,5,6)},
-  {id:"wk2",s:new Date(2026,5,8), e:new Date(2026,5,13)},
-  {id:"wk3",s:new Date(2026,5,15),e:new Date(2026,5,20)},
-  {id:"wk4",s:new Date(2026,5,22),e:new Date(2026,5,27)},
+  {id:"wk1",s:new Date(2026,5,1), e:new Date(2026,5,7)},
+  {id:"wk2",s:new Date(2026,5,8), e:new Date(2026,5,14)},
+  {id:"wk3",s:new Date(2026,5,15),e:new Date(2026,5,21)},
+  {id:"wk4",s:new Date(2026,5,22),e:new Date(2026,5,28)},
   {id:"wk5",s:new Date(2026,5,29),e:new Date(2026,5,30)}
 ];
 
@@ -451,10 +453,11 @@ function renderTeams(){
     html+='<div class="tc-medal">'+medals[i]+'</div>';
     html+='<div class="tc-name"><span class="tc-dot" style="background:'+m.c+'"></span>'+t+'</div>';
     html+='<div class="tc-sub">'+m.n+' members &nbsp;·&nbsp; Rank #'+(i+1)+'</div>';
-    html+='<div class="tc-km" style="color:'+m.c+'">'+km.toFixed(1)+'</div>';
-    html+='<div class="tc-kml">Total KM</div>';
-    // ── CHANGE A: avg displayed as a bold coloured pill badge ──
-    html+='<div class="tc-avg">Avg / person <strong style="display:inline-block;background:'+m.bg+';color:'+m.c+';font-size:15px;padding:3px 11px;border-radius:20px;border:1.5px solid '+m.c+'40;margin-left:4px">'+avg.toFixed(2)+' km</strong></div>';
+    // CHANGE 1A: avg is now the hero number (big 38px slot)
+    html+='<div class="tc-km" style="color:'+m.c+'">'+avg.toFixed(2)+'</div>';
+    html+='<div class="tc-kml">Avg KM / Person</div>';
+    // CHANGE 1B: total moves to the smaller pill row below
+    html+='<div class="tc-avg">Total: <strong style="display:inline-block;background:'+m.bg+';color:'+m.c+';font-size:13px;padding:2px 9px;border-radius:20px;border:1.5px solid '+m.c+'40;margin-left:4px">'+km.toFixed(1)+' km</strong></div>';
     html+='<div class="pb"><div class="pbf" style="width:'+pct.toFixed(1)+'%;background:'+m.c+'"></div></div>';
     html+='</div>';
   });
@@ -496,7 +499,7 @@ function renderAwards(){
   DATA.forEach(function(p){ var t=kmTotal(p); if(t>topKm){topKm=t;topP=p;} });
   if(topP){ setText("aw1n",topP.name); setText("aw1v",topKm.toFixed(1)+" km total"); }
 
-  // Best Team — CHANGE B: sort by avg KM/person (matches team leaderboard ranking)
+  // Best Team — sort by avg KM/person (matches team leaderboard ranking)
   var tt={};
   Object.keys(TMETA).forEach(function(k){tt[k]=0;});
   DATA.forEach(function(p){ if(tt.hasOwnProperty(p.team)) tt[p.team]+=kmTotal(p); });
