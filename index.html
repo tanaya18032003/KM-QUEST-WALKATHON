@@ -262,7 +262,7 @@
         <span class="aw-ico">🏅</span>
         <div class="aw-lbl">Best Team Award</div>
         <div class="aw-nm" id="aw3n">—</div>
-        <div class="aw-val" id="aw3v">Highest cumulative KM</div>
+        <div class="aw-val" id="aw3v">Highest avg KM / person</div>
       </div>
     </div>
   </div>
@@ -440,15 +440,12 @@ function renderTeams(){
   var tot={};
   Object.keys(TMETA).forEach(function(k){ tot[k]=0; });
   DATA.forEach(function(p){ if(tot.hasOwnProperty(p.team)) tot[p.team]+=kmTotal(p); });
-  // ── CHANGE 1: sort by avg KM per person (tot/n) instead of total KM ──
   var sorted=Object.keys(tot).sort(function(a,b){ return (tot[b]/TMETA[b].n)-(tot[a]/TMETA[a].n); });
-  // ── CHANGE 2: progress bar baseline = highest avg, not highest total ──
   var maxAvg=(tot[sorted[0]]/TMETA[sorted[0]].n)||1;
   var medals=["🥇","🥈","🥉"], rcs=["r1","r2","r3"];
   var html="";
   sorted.forEach(function(t,i){
     var m=TMETA[t], km=tot[t], avg=km/m.n;
-    // ── CHANGE 3: pct based on avg vs maxAvg ──
     var pct=(avg/maxAvg)*100;
     html+='<div class="tc '+rcs[i]+'">';
     html+='<div class="tc-medal">'+medals[i]+'</div>';
@@ -456,7 +453,8 @@ function renderTeams(){
     html+='<div class="tc-sub">'+m.n+' members &nbsp;·&nbsp; Rank #'+(i+1)+'</div>';
     html+='<div class="tc-km" style="color:'+m.c+'">'+km.toFixed(1)+'</div>';
     html+='<div class="tc-kml">Total KM</div>';
-    html+='<div class="tc-avg">Avg per person: <strong>'+avg.toFixed(1)+' km</strong></div>';
+    // ── CHANGE A: avg displayed as a bold coloured pill badge ──
+    html+='<div class="tc-avg">Avg / person <strong style="display:inline-block;background:'+m.bg+';color:'+m.c+';font-size:15px;padding:3px 11px;border-radius:20px;border:1.5px solid '+m.c+'40;margin-left:4px">'+avg.toFixed(2)+' km</strong></div>';
     html+='<div class="pb"><div class="pbf" style="width:'+pct.toFixed(1)+'%;background:'+m.c+'"></div></div>';
     html+='</div>';
   });
@@ -498,12 +496,12 @@ function renderAwards(){
   DATA.forEach(function(p){ var t=kmTotal(p); if(t>topKm){topKm=t;topP=p;} });
   if(topP){ setText("aw1n",topP.name); setText("aw1v",topKm.toFixed(1)+" km total"); }
 
-  // Best Team
+  // Best Team — CHANGE B: sort by avg KM/person (matches team leaderboard ranking)
   var tt={};
   Object.keys(TMETA).forEach(function(k){tt[k]=0;});
   DATA.forEach(function(p){ if(tt.hasOwnProperty(p.team)) tt[p.team]+=kmTotal(p); });
-  var best=Object.keys(tt).sort(function(a,b){return tt[b]-tt[a];})[0];
-  if(best){ setText("aw3n",best); setText("aw3v",tt[best].toFixed(1)+" km cumulative"); }
+  var best=Object.keys(tt).sort(function(a,b){ return (tt[b]/TMETA[b].n)-(tt[a]/TMETA[a].n); })[0];
+  if(best){ setText("aw3n",best); setText("aw3v",(tt[best]/TMETA[best].n).toFixed(2)+" km avg / person"); }
 
   // Consistency (requires ≥2 weeks of data)
   var wkCount=0;
@@ -537,7 +535,6 @@ function bindAdmin(){
   function showMsg(txt,cls){ smsg.textContent=txt; smsg.className="smsg "+cls; smsg.style.display="block"; }
   function hideMsg(){ smsg.style.display="none"; }
 
-  // FAB → show pw modal OR open panel if already logged in
   $("fabBtn").onclick = function(){
     if(loggedIn){
       hideMsg();
@@ -549,11 +546,9 @@ function bindAdmin(){
     }
   };
 
-  // Close pw modal on backdrop click
   pwOv.onclick = function(e){ if(e.target===pwOv) pwOv.classList.remove("show"); };
   $("pwCancelBtn").onclick = function(){ pwOv.classList.remove("show"); };
 
-  // Login
   function doLogin(){
     if(pwIn.value === ADMIN_PW){
       loggedIn=true;
@@ -569,18 +564,15 @@ function bindAdmin(){
   $("pwOkBtn").onclick  = doLogin;
   pwIn.onkeydown = function(e){ if(e.key==="Enter") doLogin(); };
 
-  // Close admin panel
   apOv.onclick = function(e){ if(e.target===apOv) apOv.classList.remove("show"); };
   $("apCloseBtn").onclick = function(){ apOv.classList.remove("show"); };
   $("logoutBtn").onclick  = function(){ loggedIn=false; apOv.classList.remove("show"); };
 
-  // Upload zone clicks
   uz.onclick = function(e){
     if(e.target===uz || e.target.tagName==="P" || e.target.className==="uico") fileIn.click();
   };
   $("browseBtn").onclick = function(e){ e.stopPropagation(); fileIn.click(); };
 
-  // Drag-drop
   uz.ondragover  = function(e){ e.preventDefault(); uz.classList.add("ov3"); };
   uz.ondragleave = function(){ uz.classList.remove("ov3"); };
   uz.ondrop = function(e){
@@ -589,11 +581,9 @@ function bindAdmin(){
   };
   fileIn.onchange = function(){ if(this.files[0]) processFile(this.files[0]); };
 
-  // Export / Reset
   $("exportBtn").onclick = doExport;
   $("resetBtn").onclick  = doReset;
 
-  // ── FILE PROCESSING ─────────────────────────────────────
   function processFile(file){
     if(!/\.xlsx?$/i.test(file.name)){ showMsg("❌ Please upload an .xlsx or .xls file","er"); return; }
     showMsg("⏳ Reading file…","inf");
@@ -603,7 +593,6 @@ function bindAdmin(){
       try{
         if(typeof XLSX==="undefined"){ showMsg("❌ SheetJS library not loaded. Check your internet connection.","er"); return; }
         var wb = XLSX.read(ev.target.result, {type:"array"});
-        // Find "Master Sheet" tab
         var sn = wb.SheetNames[0];
         for(var i=0;i<wb.SheetNames.length;i++){
           if(/master\s*sheet/i.test(wb.SheetNames[i]) && !/2/.test(wb.SheetNames[i])){ sn=wb.SheetNames[i]; break; }
@@ -622,7 +611,6 @@ function bindAdmin(){
 
   function parseRows(rows){
     var res=[], hr=-1, ec=-1, tc=-1, wc=[-1,-1,-1,-1,-1];
-    // Find header row
     for(var r=0;r<Math.min(rows.length,20);r++){
       var row=rows[r];
       for(var c=0;c<row.length;c++){
@@ -637,7 +625,6 @@ function bindAdmin(){
       }
       if(hr>=0) break;
     }
-    // Fallback column positions (known Excel structure)
     if(ec<0) ec=2;
     if(tc<0) tc=1;
     if(wc[0]<0) wc=[3,5,8,11,14];
@@ -646,7 +633,6 @@ function bindAdmin(){
       var nm=String(row[ec]||"").trim();
       var tm=String(row[tc]||"").trim();
       if(!nm||nm.length<3) continue;
-      // Normalise team name
       var nt=tm;
       if(/aero|fc.?ec|crash/i.test(tm))    nt="Aero, FC/EC, Crash & PM";
       else if(/mbs|ctt/i.test(tm))         nt="MBS & CTT";
@@ -660,7 +646,6 @@ function bindAdmin(){
     return res;
   }
 
-  // ── EXPORT ──────────────────────────────────────────────
   function doExport(){
     showMsg("⏳ Generating export…","inf");
     try{
@@ -682,7 +667,6 @@ function bindAdmin(){
     }catch(err){ showMsg("❌ Export failed: "+err.message,"er"); }
   }
 
-  // ── RESET ───────────────────────────────────────────────
   function doReset(){
     if(!confirm("Reset all data to default Week 1 values?")) return;
     DATA=clone(DEFAULT_DATA);
