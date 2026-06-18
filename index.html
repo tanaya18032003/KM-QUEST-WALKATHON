@@ -99,7 +99,24 @@
   .wd.on{background:#10b981}
   .kv{text-align:right;font-size:15px;font-weight:800;color:var(--text)}
   .kv small{display:block;font-size:10px;font-weight:400;color:var(--muted)}
-  .t10hide{} /* shown by default, hidden on mobile */
+  .t10hide{}
+
+  /* ── TABS (new) ── */
+  .tabs-nav{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .tab-btn{padding:8px 20px;border:1.5px solid var(--border);border-radius:50px;font-size:12px;font-weight:600;cursor:pointer;background:var(--card);color:var(--muted);transition:.15s;font-family:inherit;white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
+  .tab-btn:hover{transform:translateY(-1px);box-shadow:var(--sh)}
+
+  /* ── PARTICIPANT TABLE (new) ── */
+  .pov{overflow-x:auto;border-radius:var(--r);box-shadow:var(--sh)}
+  .plist{width:100%;border-collapse:collapse;background:var(--card);font-size:13px;min-width:520px}
+  .plist thead th{background:#f8fafc;padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+  .plist thead th:nth-child(n+3){text-align:right}
+  .plist tbody td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+  .plist tbody td:nth-child(n+3){text-align:right;font-variant-numeric:tabular-nums}
+  .plist tbody tr:last-child td{border-bottom:none}
+  .plist tbody tr:hover td{background:#fafbfc}
+  .plist tfoot td{padding:10px 14px;background:#f8fafc;border-top:2px solid var(--border)}
+  .plist tfoot td:nth-child(n+3){text-align:right;font-variant-numeric:tabular-nums}
 
   /* AWARDS */
   .awards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
@@ -207,7 +224,6 @@
   <div class="sec">
     <div class="sec-hd"><h2><span class="ico">📅</span>Challenge Timeline</h2></div>
     <div class="timeline">
-      <!-- CHANGE 2: fixed end dates — each week now includes its 7th day -->
       <div class="wk" id="wk1"><div class="wl">W1</div><div class="wd2">1 – 7 Jun</div><div class="ws">—</div></div>
       <div class="wk" id="wk2"><div class="wl">W2</div><div class="wd2">8 – 14 Jun</div><div class="ws">—</div></div>
       <div class="wk" id="wk3"><div class="wl">W3</div><div class="wd2">15 – 21 Jun</div><div class="ws">—</div></div>
@@ -241,6 +257,16 @@
       </div>
       <div id="t10body"></div>
     </div>
+  </div>
+
+  <!-- ALL PARTICIPANTS (new) -->
+  <div class="sec">
+    <div class="sec-hd">
+      <h2><span class="ico">👥</span>All Participants</h2>
+      <small>KM by week · Teamwise</small>
+    </div>
+    <div class="tabs-nav" id="teamTabsNav"></div>
+    <div id="teamTabsContent"></div>
   </div>
 
   <!-- AWARDS -->
@@ -316,75 +342,79 @@
 <script>
 // @@KMQ_DATA_START@@
 var DEFAULT_DATA = [
-  {name:"Kulkarni, Prasad",         team:"Durability & NVH",        w:[49.98,0,0,0,0]},
-  {name:"Shetty, Rajendra",         team:"Durability & NVH",        w:[22.4,0,0,0,0]},
-  {name:"Mulakalapalli, Vijaykumar",team:"Durability & NVH",        w:[9.8,0,0,0,0]},
-  {name:"Hurakadli, Raju",          team:"Durability & NVH",        w:[26.6,0,0,0,0]},
-  {name:"Tom, Jis",                 team:"Durability & NVH",        w:[29.26,0,0,0,0]},
-  {name:"Mugalalli, Hemant",        team:"Durability & NVH",        w:[46.85,0,0,0,0]},
-  {name:"Gunasekaran, Parthasarathi",team:"Durability & NVH",       w:[35.7,0,0,0,0]},
-  {name:"Marakkamthodi, Rohit",     team:"Durability & NVH",        w:[30.1,0,0,0,0]},
-  {name:"Sadekar, Rahul",           team:"Durability & NVH",        w:[30.8,0,0,0,0]},
-  {name:"Arumugam, Boopathiraja",   team:"Durability & NVH",        w:[21.7,0,0,0,0]},
-  {name:"Raja Sekar, Prabhu",       team:"Durability & NVH",        w:[18.3,0,0,0,0]},
-  {name:"K S, Swaroop",             team:"Durability & NVH",        w:[22.4,0,0,0,0]},
-  {name:"Kumar, Kiran",             team:"Durability & NVH",        w:[51.1,0,0,0,0]},
-  {name:"R, Sowjanya",              team:"Durability & NVH",        w:[19.6,0,0,0,0]},
-  {name:"Shivalingaiah, Shivakumara",team:"Durability & NVH",       w:[40.53,0,0,0,0]},
-  {name:"Sarkar, Sushanto",         team:"Durability & NVH",        w:[61.6,0,0,0,0]},
-  {name:"Kumar Gupta, Rahul",       team:"Durability & NVH",        w:[42.56,0,0,0,0]},
-  {name:"Kenchaplara, Vinay Kumar", team:"Durability & NVH",        w:[45.5,0,0,0,0]},
-  {name:"Kumbar, Somaling",         team:"Aero, FC/EC, Crash & PM", w:[65.6,0,0,0,0]},
-  {name:"Rajagopal, Naveen",        team:"Aero, FC/EC, Crash & PM", w:[15.82,0,0,0,0]},
-  {name:"Mylavarapu, Deepak",       team:"Aero, FC/EC, Crash & PM", w:[51.4,0,0,0,0]},
-  {name:"Selvaraju, Senthil Kumar", team:"Aero, FC/EC, Crash & PM", w:[0,0,0,0,0]},
-  {name:"Nanjappa, Vivek",          team:"Aero, FC/EC, Crash & PM", w:[50,0,0,0,0]},
-  {name:"Salunkhe, Vikrant",        team:"Aero, FC/EC, Crash & PM", w:[0,0,0,0,0]},
-  {name:"Jaiswal, Ajay Kumar",      team:"Aero, FC/EC, Crash & PM", w:[0,0,0,0,0]},
-  {name:"Pawar, Sourabh",           team:"Aero, FC/EC, Crash & PM", w:[0,0,0,0,0]},
-  {name:"Giri, Rajeev Kumar",       team:"Aero, FC/EC, Crash & PM", w:[21.31,0,0,0,0]},
-  {name:"Kurella, Chaitanya",       team:"Aero, FC/EC, Crash & PM", w:[13.32,0,0,0,0]},
-  {name:"Eshwarbhat, Prathviraj",   team:"Aero, FC/EC, Crash & PM", w:[37.8,0,0,0,0]},
-  {name:"Muralidhara, Chaithra",    team:"Aero, FC/EC, Crash & PM", w:[34.2,0,0,0,0]},
-  {name:"R S, Arvind",              team:"Aero, FC/EC, Crash & PM", w:[0,0,0,0,0]},
-  {name:"Reddy, Sivakumar",         team:"Aero, FC/EC, Crash & PM", w:[0,0,0,0,0]},
-  {name:"Das, Rosalin",             team:"MBS & CTT",               w:[20.81,0,0,0,0]},
-  {name:"Kotian, Pradeep",          team:"MBS & CTT",               w:[30.28,0,0,0,0]},
-  {name:"Beno, Abchen",             team:"MBS & CTT",               w:[48.28,0,0,0,0]},
-  {name:"Bhat, Rakshit",            team:"MBS & CTT",               w:[21.68,0,0,0,0]},
-  {name:"Bhedarkar, Ashutosh",      team:"MBS & CTT",               w:[35.8,0,0,0,0]},
-  {name:"C, Anjaljith",             team:"MBS & CTT",               w:[23.68,0,0,0,0]},
-  {name:"Chandran, Manu",           team:"MBS & CTT",               w:[12.27,0,0,0,0]},
-  {name:"Dharmendra Kumar, Dishita",team:"MBS & CTT",               w:[37.8,0,0,0,0]},
-  {name:"Gurav, Omkar",             team:"MBS & CTT",               w:[21.63,0,0,0,0]},
-  {name:"Hulgeri, Channabasayya",   team:"MBS & CTT",               w:[0,0,0,0,0]},
-  {name:"J, Deepthi",               team:"MBS & CTT",               w:[9.9,0,0,0,0]},
-  {name:"K S, Balaji",              team:"MBS & CTT",               w:[67.12,0,0,0,0]},
-  {name:"Khare, Harshad",           team:"MBS & CTT",               w:[0,0,0,0,0]},
-  {name:"Kumar Km, Dileep",         team:"MBS & CTT",               w:[70.77,0,0,0,0]},
-  {name:"Naik, Tanaya",             team:"MBS & CTT",               w:[40.64,0,0,0,0]},
-  {name:"Narayana, Pavan",          team:"MBS & CTT",               w:[35.54,0,0,0,0]},
-  {name:"Pal, Alokesh",             team:"MBS & CTT",               w:[65.01,0,0,0,0]},
-  {name:"Pasupuleti, Naveen Kumar", team:"MBS & CTT",               w:[42.42,0,0,0,0]},
-  {name:"Raju, Subramanyam",        team:"MBS & CTT",               w:[0,0,0,0,0]},
-  {name:"Ramesh, Swathi",           team:"MBS & CTT",               w:[0,0,0,0,0]},
-  {name:"Ravikumar, Pratap Daniel", team:"MBS & CTT",               w:[44.57,0,0,0,0]},
-  {name:"Sajjan, Mrityunjaya",      team:"MBS & CTT",               w:[59.66,0,0,0,0]},
-  {name:"Salimath, Vijayakumar",    team:"MBS & CTT",               w:[71.25,0,0,0,0]},
-  {name:"Shivappa, Mahesh",         team:"MBS & CTT",               w:[37.98,0,0,0,0]},
-  {name:"Tandle, Sahana",           team:"MBS & CTT",               w:[17.13,0,0,0,0]}
+  {name:"Kulkarni, Prasad",          team:"Durability & NVH",        w:[49.98,0,0,0,0]},
+  {name:"Shetty, Rajendra",          team:"Durability & NVH",        w:[22.4,0,0,0,0]},
+  {name:"Mulakalapalli, Vijaykumar", team:"Durability & NVH",        w:[9.8,0,0,0,0]},
+  {name:"Hurakadli, Raju",           team:"Durability & NVH",        w:[26.6,0,0,0,0]},
+  {name:"Tom, Jis",                  team:"Durability & NVH",        w:[29.26,0,0,0,0]},
+  {name:"Mugalalli, Hemant",         team:"Durability & NVH",        w:[46.85,0,0,0,0]},
+  {name:"Gunasekaran, Parthasarathi",team:"Durability & NVH",        w:[35.7,0,0,0,0]},
+  {name:"Marakkamthodi, Rohit",      team:"Durability & NVH",        w:[30.1,0,0,0,0]},
+  {name:"Sadekar, Rahul",            team:"Durability & NVH",        w:[30.8,0,0,0,0]},
+  {name:"Arumugam, Boopathiraja",    team:"Durability & NVH",        w:[21.7,0,0,0,0]},
+  {name:"Raja Sekar, Prabhu",        team:"Durability & NVH",        w:[18.3,0,0,0,0]},
+  {name:"K S, Swaroop",              team:"Durability & NVH",        w:[22.4,0,0,0,0]},
+  {name:"Kumar, Kiran",              team:"Durability & NVH",        w:[51.1,0,0,0,0]},
+  {name:"R, Sowjanya",               team:"Durability & NVH",        w:[19.6,0,0,0,0]},
+  {name:"Shivalingaiah, Shivakumara",team:"Durability & NVH",        w:[40.53,0,0,0,0]},
+  {name:"Sarkar, Sushanto",          team:"Durability & NVH",        w:[61.6,0,0,0,0]},
+  {name:"Kumar Gupta, Rahul",        team:"Durability & NVH",        w:[42.56,0,0,0,0]},
+  {name:"Kenchaplara, Vinay Kumar",  team:"Durability & NVH",        w:[45.5,0,0,0,0]},
+  {name:"Kumbar, Somaling",          team:"Aero, FC/EC, Crash & PM", w:[65.6,0,0,0,0]},
+  {name:"Rajagopal, Naveen",         team:"Aero, FC/EC, Crash & PM", w:[15.82,0,0,0,0]},
+  {name:"Mylavarapu, Deepak",        team:"Aero, FC/EC, Crash & PM", w:[51.4,0,0,0,0]},
+  {name:"Selvaraju, Senthil Kumar",  team:"Aero, FC/EC, Crash & PM", w:[0,0,0,0,0]},
+  {name:"Nanjappa, Vivek",           team:"Aero, FC/EC, Crash & PM", w:[50,0,0,0,0]},
+  {name:"Salunkhe, Vikrant",         team:"Aero, FC/EC, Crash & PM", w:[0,0,0,0,0]},
+  {name:"Jaiswal, Ajay Kumar",       team:"Aero, FC/EC, Crash & PM", w:[0,0,0,0,0]},
+  {name:"Pawar, Sourabh",            team:"Aero, FC/EC, Crash & PM", w:[0,0,0,0,0]},
+  {name:"Giri, Rajeev Kumar",        team:"Aero, FC/EC, Crash & PM", w:[21.31,0,0,0,0]},
+  {name:"Kurella, Chaitanya",        team:"Aero, FC/EC, Crash & PM", w:[13.32,0,0,0,0]},
+  {name:"Eshwarbhat, Prathviraj",    team:"Aero, FC/EC, Crash & PM", w:[37.8,0,0,0,0]},
+  {name:"Muralidhara, Chaithra",     team:"Aero, FC/EC, Crash & PM", w:[34.2,0,0,0,0]},
+  {name:"R S, Arvind",               team:"Aero, FC/EC, Crash & PM", w:[0,0,0,0,0]},
+  {name:"Reddy, Sivakumar",          team:"Aero, FC/EC, Crash & PM", w:[0,0,0,0,0]},
+  {name:"Das, Rosalin",              team:"MBS & CTT",               w:[20.81,0,0,0,0]},
+  {name:"Kotian, Pradeep",           team:"MBS & CTT",               w:[30.28,0,0,0,0]},
+  {name:"Beno, Abchen",              team:"MBS & CTT",               w:[48.28,0,0,0,0]},
+  {name:"Bhat, Rakshit",             team:"MBS & CTT",               w:[21.68,0,0,0,0]},
+  {name:"Bhedarkar, Ashutosh",       team:"MBS & CTT",               w:[35.8,0,0,0,0]},
+  {name:"C, Anjaljith",              team:"MBS & CTT",               w:[23.68,0,0,0,0]},
+  {name:"Chandran, Manu",            team:"MBS & CTT",               w:[12.27,0,0,0,0]},
+  {name:"Dharmendra Kumar, Dishita", team:"MBS & CTT",               w:[37.8,0,0,0,0]},
+  {name:"Gurav, Omkar",              team:"MBS & CTT",               w:[21.63,0,0,0,0]},
+  {name:"Hulgeri, Channabasayya",    team:"MBS & CTT",               w:[50,0,0,0,0]},
+  {name:"J, Deepthi",                team:"MBS & CTT",               w:[9.9,0,0,0,0]},
+  {name:"K S, Balaji",               team:"MBS & CTT",               w:[67.12,0,0,0,0]},
+  {name:"Khare, Harshad",            team:"MBS & CTT",               w:[0,0,0,0,0]},
+  {name:"Kumar Km, Dileep",          team:"MBS & CTT",               w:[70.77,0,0,0,0]},
+  {name:"Naik, Tanaya",              team:"MBS & CTT",               w:[70.64,0,0,0,0]},
+  {name:"Narayana, Pavan",           team:"MBS & CTT",               w:[35.54,0,0,0,0]},
+  {name:"Pal, Alokesh",              team:"MBS & CTT",               w:[65.01,0,0,0,0]},
+  {name:"Pasupuleti, Naveen Kumar",  team:"MBS & CTT",               w:[42.42,0,0,0,0]},
+  {name:"Raju, Subramanyam",         team:"MBS & CTT",               w:[0,0,0,0,0]},
+  {name:"Ramesh, Swathi",            team:"MBS & CTT",               w:[0,0,0,0,0]},
+  {name:"Ravikumar, Pratap Daniel",  team:"MBS & CTT",               w:[44.57,0,0,0,0]},
+  {name:"Sajjan, Mrityunjaya",       team:"MBS & CTT",               w:[59.66,0,0,0,0]},
+  {name:"Salimath, Vijayakumar",     team:"MBS & CTT",               w:[71.25,0,0,0,0]},
+  {name:"Shivappa, Mahesh",          team:"MBS & CTT",               w:[37.98,0,0,0,0]},
+  {name:"Tandle, Sahana",            team:"MBS & CTT",               w:[17.13,0,0,0,0]}
 ];
+var DEFAULT_TEAM_AVGS = {
+  "Durability & NVH":        [33.60, 0, 0, 0, 0],
+  "Aero, FC/EC, Crash & PM": [20.68, 0, 0, 0, 0],
+  "MBS & CTT":               [35.77, 0, 0, 0, 0]
+};
 // @@KMQ_DATA_END@@
 
 // ─── CONFIG ────────────────────────────────────────────────
-var ADMIN_PW  = "KMAdmin2026";
-var LS_KEY    = "kmq_v2";
+var ADMIN_PW = "KMAdmin2026";
+var LS_KEY   = "kmq_v2";
 var TMETA = {
   "Durability & NVH":        {c:"#1d4ed8", bg:"#eff6ff", n:18},
   "Aero, FC/EC, Crash & PM": {c:"#059669", bg:"#ecfdf5", n:14},
   "MBS & CTT":               {c:"#d97706", bg:"#fffbeb", n:25}
 };
-// CHANGE 3: corrected week end dates (6→7, 13→14, 20→21, 27→28)
 var WEEKS = [
   {id:"wk1",s:new Date(2026,5,1), e:new Date(2026,5,7)},
   {id:"wk2",s:new Date(2026,5,8), e:new Date(2026,5,14)},
@@ -394,8 +424,9 @@ var WEEKS = [
 ];
 
 // ─── STATE ─────────────────────────────────────────────────
-var DATA = [];
-var loggedIn = false;
+var DATA      = [];
+var TEAM_AVGS = {};
+var loggedIn  = false;
 
 // ─── HELPERS ───────────────────────────────────────────────
 function $(id){ return document.getElementById(id); }
@@ -408,25 +439,33 @@ function init(){
   var saved=null;
   try{ saved=JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){}
   DATA = (saved && Array.isArray(saved) && saved.length>4) ? saved : clone(DEFAULT_DATA);
+
+  var savedTA=null;
+  try{ savedTA=JSON.parse(localStorage.getItem(LS_KEY+"_ta")); }catch(e){}
+  var defTA = (typeof DEFAULT_TEAM_AVGS!=='undefined') ? DEFAULT_TEAM_AVGS : {};
+  TEAM_AVGS = (savedTA && typeof savedTA==='object' && !Array.isArray(savedTA)) ? savedTA : clone(defTA);
+  // Ensure every team has an entry
+  Object.keys(TMETA).forEach(function(k){ if(!TEAM_AVGS[k]) TEAM_AVGS[k]=[0,0,0,0,0]; });
+
   renderTimeline();
   renderStats();
   renderTeams();
   renderTop10();
+  renderParticipants();
   renderAwards();
   bindAdmin();
 }
 
 // ─── TIMELINE ──────────────────────────────────────────────
 function renderTimeline(){
-  var now = new Date();
+  var now=new Date();
   WEEKS.forEach(function(w){
-    var el=$(w.id);
-    if(!el) return;
+    var el=$(w.id); if(!el) return;
     var st=el.querySelector(".ws");
     el.className="wk";
-    if(now > w.e){         el.classList.add("done");     if(st) st.textContent="✓ Done"; }
-    else if(now >= w.s){   el.classList.add("live");     if(st) st.textContent="● Live"; }
-    else{                  el.classList.add("upcoming"); if(st) st.textContent="Upcoming"; }
+    if(now>w.e){        el.classList.add("done");     if(st) st.textContent="✓ Done"; }
+    else if(now>=w.s){  el.classList.add("live");     if(st) st.textContent="● Live"; }
+    else{               el.classList.add("upcoming"); if(st) st.textContent="Upcoming"; }
   });
 }
 
@@ -438,40 +477,46 @@ function renderStats(){
 }
 
 // ─── TEAMS ─────────────────────────────────────────────────
+// Uses TEAM_AVGS (from Excel's "Total of Wx avg kms" column) as the authoritative avg
 function renderTeams(){
   var tot={};
   Object.keys(TMETA).forEach(function(k){ tot[k]=0; });
   DATA.forEach(function(p){ if(tot.hasOwnProperty(p.team)) tot[p.team]+=kmTotal(p); });
-  var sorted=Object.keys(tot).sort(function(a,b){ return (tot[b]/TMETA[b].n)-(tot[a]/TMETA[a].n); });
-  var maxAvg=(tot[sorted[0]]/TMETA[sorted[0]].n)||1;
+
+  // Cumulative avg per team = sum of weekly avgs stored in TEAM_AVGS
+  var avgMap={};
+  Object.keys(TMETA).forEach(function(k){
+    avgMap[k]=(TEAM_AVGS[k]||[0,0,0,0,0]).reduce(function(a,b){return a+b;},0);
+  });
+
+  var sorted=Object.keys(avgMap).sort(function(a,b){return avgMap[b]-avgMap[a];});
+  var maxAvg=avgMap[sorted[0]]||1;
   var medals=["🥇","🥈","🥉"], rcs=["r1","r2","r3"];
   var html="";
   sorted.forEach(function(t,i){
-    var m=TMETA[t], km=tot[t], avg=km/m.n;
+    var m=TMETA[t], km=tot[t], avg=avgMap[t];
     var pct=(avg/maxAvg)*100;
     html+='<div class="tc '+rcs[i]+'">';
     html+='<div class="tc-medal">'+medals[i]+'</div>';
     html+='<div class="tc-name"><span class="tc-dot" style="background:'+m.c+'"></span>'+t+'</div>';
     html+='<div class="tc-sub">'+m.n+' members &nbsp;·&nbsp; Rank #'+(i+1)+'</div>';
-    // CHANGE 1A: avg is now the hero number (big 38px slot)
     html+='<div class="tc-km" style="color:'+m.c+'">'+avg.toFixed(2)+'</div>';
     html+='<div class="tc-kml">Avg KM / Person</div>';
-    // CHANGE 1B: total moves to the smaller pill row below
     html+='<div class="tc-avg">Total: <strong style="display:inline-block;background:'+m.bg+';color:'+m.c+';font-size:13px;padding:2px 9px;border-radius:20px;border:1.5px solid '+m.c+'40;margin-left:4px">'+km.toFixed(1)+' km</strong></div>';
     html+='<div class="pb"><div class="pbf" style="width:'+pct.toFixed(1)+'%;background:'+m.c+'"></div></div>';
     html+='</div>';
   });
-  $("teamsGrid").innerHTML = html;
+  $("teamsGrid").innerHTML=html;
 }
 
 // ─── TOP 10 ────────────────────────────────────────────────
 function renderTop10(){
-  var people = DATA.map(function(p){
+  var people=DATA.map(function(p){
     var total=kmTotal(p), active=0;
     p.w.forEach(function(v){ if(v>0) active++; });
     return {name:p.name, team:p.team, w:p.w, total:total, active:active};
   });
-  people.sort(function(a,b){ return b.total-a.total; });
+  people.sort(function(a,b){return b.total-a.total;});
   var top=people.slice(0,10);
   var html="";
   top.forEach(function(p,i){
@@ -489,7 +534,92 @@ function renderTop10(){
     html+='<div class="kv">'+p.total.toFixed(1)+'<small>km</small></div>';
     html+='</div>';
   });
-  $("t10body").innerHTML = html||'<div style="padding:20px;text-align:center;color:var(--muted)">No data loaded</div>';
+  $("t10body").innerHTML=html||'<div style="padding:20px;text-align:center;color:var(--muted)">No data loaded</div>';
+}
+
+// ─── ALL PARTICIPANTS (new) ─────────────────────────────────
+function renderParticipants(){
+  var teams=Object.keys(TMETA);
+  var navHtml="", contentHtml="";
+
+  teams.forEach(function(team,ti){
+    var m=TMETA[team];
+    var isFirst=(ti===0);
+
+    // Tab button
+    navHtml+='<button class="tab-btn" id="ttab'+ti+'" onclick="switchTab('+ti+')" '+
+      'style="'+(isFirst
+        ? 'background:'+m.c+';color:#fff;border-color:'+m.c
+        : 'color:'+m.c+';border-color:'+m.c+';background:var(--card)')+'">'+
+      '<span style="width:8px;height:8px;border-radius:50%;display:inline-block;background:'+(isFirst?'#fff':m.c)+'"></span>'+
+      team+'</button>';
+
+    // Participant rows sorted by total KM desc
+    var members=DATA.filter(function(p){return p.team===team;});
+    members.sort(function(a,b){return kmTotal(b)-kmTotal(a);});
+    var avgs=TEAM_AVGS[team]||[0,0,0,0,0];
+
+    var tbl='<div class="pov"><table class="plist">';
+    tbl+='<thead><tr>';
+    tbl+='<th style="width:36px">#</th><th>Name</th>';
+    tbl+='<th>W1</th><th>W2</th><th>W3</th><th>W4</th><th>W5</th><th>Total</th>';
+    tbl+='</tr></thead><tbody>';
+
+    members.forEach(function(p,idx){
+      var tot=kmTotal(p);
+      tbl+='<tr>';
+      tbl+='<td style="color:var(--muted);font-size:11px">'+(idx+1)+'</td>';
+      tbl+='<td style="font-weight:600">'+p.name+'</td>';
+      for(var w=0;w<5;w++){
+        var v=p.w[w]||0;
+        tbl+=v>0
+          ?'<td style="font-weight:600;color:'+m.c+'">'+v.toFixed(1)+'</td>'
+          :'<td style="color:var(--light)">—</td>';
+      }
+      tbl+='<td style="font-weight:800">'+tot.toFixed(1)+'</td>';
+      tbl+='</tr>';
+    });
+
+    tbl+='</tbody>';
+
+    // Footer: team avg row (from TEAM_AVGS — authoritative Excel values)
+    tbl+='<tfoot><tr>';
+    tbl+='<td></td>';
+    tbl+='<td style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:'+m.c+'">Team Avg / Person</td>';
+    for(var w=0;w<5;w++){
+      var av=avgs[w];
+      tbl+='<td style="font-weight:700;color:'+m.c+'">'+(av>0?av.toFixed(2):'—')+'</td>';
+    }
+    var cumAvg=avgs.reduce(function(a,b){return a+b;},0);
+    tbl+='<td style="font-weight:800;color:'+m.c+'">'+cumAvg.toFixed(2)+'</td>';
+    tbl+='</tr></tfoot>';
+    tbl+='</table></div>';
+
+    contentHtml+='<div id="tpane'+ti+'" style="display:'+(isFirst?'block':'none')+'">'+tbl+'</div>';
+  });
+
+  $("teamTabsNav").innerHTML=navHtml;
+  $("teamTabsContent").innerHTML=contentHtml;
+}
+
+// Global — called from inline onclick in tab buttons
+function switchTab(ti){
+  var teams=Object.keys(TMETA);
+  teams.forEach(function(team,idx){
+    var m=TMETA[team];
+    var btn=$("ttab"+idx);
+    var pane=$("tpane"+idx);
+    if(btn){
+      if(idx===ti){
+        btn.style.cssText='background:'+m.c+';color:#fff;border-color:'+m.c;
+        var dot=btn.querySelector("span"); if(dot) dot.style.background="#fff";
+      } else {
+        btn.style.cssText='color:'+m.c+';border-color:'+m.c+';background:var(--card)';
+        var dot=btn.querySelector("span"); if(dot) dot.style.background=m.c;
+      }
+    }
+    if(pane) pane.style.display=(idx===ti)?'block':'none';
+  });
 }
 
 // ─── AWARDS ────────────────────────────────────────────────
@@ -499,12 +629,17 @@ function renderAwards(){
   DATA.forEach(function(p){ var t=kmTotal(p); if(t>topKm){topKm=t;topP=p;} });
   if(topP){ setText("aw1n",topP.name); setText("aw1v",topKm.toFixed(1)+" km total"); }
 
-  // Best Team — sort by avg KM/person (matches team leaderboard ranking)
-  var tt={};
-  Object.keys(TMETA).forEach(function(k){tt[k]=0;});
-  DATA.forEach(function(p){ if(tt.hasOwnProperty(p.team)) tt[p.team]+=kmTotal(p); });
-  var best=Object.keys(tt).sort(function(a,b){ return (tt[b]/TMETA[b].n)-(tt[a]/TMETA[a].n); })[0];
-  if(best){ setText("aw3n",best); setText("aw3v",(tt[best]/TMETA[best].n).toFixed(2)+" km avg / person"); }
+  // Best Team — use TEAM_AVGS (matches team leaderboard ranking)
+  var best=Object.keys(TMETA).sort(function(a,b){
+    var avgA=(TEAM_AVGS[a]||[0,0,0,0,0]).reduce(function(x,y){return x+y;},0);
+    var avgB=(TEAM_AVGS[b]||[0,0,0,0,0]).reduce(function(x,y){return x+y;},0);
+    return avgB-avgA;
+  })[0];
+  if(best){
+    var bestAvg=(TEAM_AVGS[best]||[0,0,0,0,0]).reduce(function(x,y){return x+y;},0);
+    setText("aw3n",best);
+    setText("aw3v",bestAvg.toFixed(2)+" km avg / person");
+  }
 
   // Consistency (requires ≥2 weeks of data)
   var wkCount=0;
@@ -538,127 +673,154 @@ function bindAdmin(){
   function showMsg(txt,cls){ smsg.textContent=txt; smsg.className="smsg "+cls; smsg.style.display="block"; }
   function hideMsg(){ smsg.style.display="none"; }
 
-  $("fabBtn").onclick = function(){
-    if(loggedIn){
-      hideMsg();
-      apOv.classList.add("show");
-    } else {
-      pwIn.value=""; pwErr.style.display="none";
-      pwOv.classList.add("show");
-      setTimeout(function(){ pwIn.focus(); }, 80);
-    }
+  $("fabBtn").onclick=function(){
+    if(loggedIn){ hideMsg(); apOv.classList.add("show"); }
+    else{ pwIn.value=""; pwErr.style.display="none"; pwOv.classList.add("show"); setTimeout(function(){ pwIn.focus(); },80); }
   };
 
-  pwOv.onclick = function(e){ if(e.target===pwOv) pwOv.classList.remove("show"); };
-  $("pwCancelBtn").onclick = function(){ pwOv.classList.remove("show"); };
+  pwOv.onclick=function(e){ if(e.target===pwOv) pwOv.classList.remove("show"); };
+  $("pwCancelBtn").onclick=function(){ pwOv.classList.remove("show"); };
 
   function doLogin(){
-    if(pwIn.value === ADMIN_PW){
-      loggedIn=true;
-      pwOv.classList.remove("show");
-      hideMsg();
-      apOv.classList.add("show");
-    } else {
-      pwErr.style.display="block";
-      pwIn.value="";
-      pwIn.focus();
-    }
+    if(pwIn.value===ADMIN_PW){
+      loggedIn=true; pwOv.classList.remove("show"); hideMsg(); apOv.classList.add("show");
+    } else { pwErr.style.display="block"; pwIn.value=""; pwIn.focus(); }
   }
-  $("pwOkBtn").onclick  = doLogin;
-  pwIn.onkeydown = function(e){ if(e.key==="Enter") doLogin(); };
+  $("pwOkBtn").onclick=doLogin;
+  pwIn.onkeydown=function(e){ if(e.key==="Enter") doLogin(); };
 
-  apOv.onclick = function(e){ if(e.target===apOv) apOv.classList.remove("show"); };
-  $("apCloseBtn").onclick = function(){ apOv.classList.remove("show"); };
-  $("logoutBtn").onclick  = function(){ loggedIn=false; apOv.classList.remove("show"); };
+  apOv.onclick=function(e){ if(e.target===apOv) apOv.classList.remove("show"); };
+  $("apCloseBtn").onclick=function(){ apOv.classList.remove("show"); };
+  $("logoutBtn").onclick=function(){ loggedIn=false; apOv.classList.remove("show"); };
 
-  uz.onclick = function(e){
-    if(e.target===uz || e.target.tagName==="P" || e.target.className==="uico") fileIn.click();
-  };
-  $("browseBtn").onclick = function(e){ e.stopPropagation(); fileIn.click(); };
+  uz.onclick=function(e){ if(e.target===uz||e.target.tagName==="P"||e.target.className==="uico") fileIn.click(); };
+  $("browseBtn").onclick=function(e){ e.stopPropagation(); fileIn.click(); };
+  uz.ondragover=function(e){ e.preventDefault(); uz.classList.add("ov3"); };
+  uz.ondragleave=function(){ uz.classList.remove("ov3"); };
+  uz.ondrop=function(e){ e.preventDefault(); uz.classList.remove("ov3"); if(e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]); };
+  fileIn.onchange=function(){ if(this.files[0]) processFile(this.files[0]); };
 
-  uz.ondragover  = function(e){ e.preventDefault(); uz.classList.add("ov3"); };
-  uz.ondragleave = function(){ uz.classList.remove("ov3"); };
-  uz.ondrop = function(e){
-    e.preventDefault(); uz.classList.remove("ov3");
-    if(e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]);
-  };
-  fileIn.onchange = function(){ if(this.files[0]) processFile(this.files[0]); };
-
-  $("exportBtn").onclick = doExport;
-  $("resetBtn").onclick  = doReset;
+  $("exportBtn").onclick=doExport;
+  $("resetBtn").onclick=doReset;
 
   function processFile(file){
     if(!/\.xlsx?$/i.test(file.name)){ showMsg("❌ Please upload an .xlsx or .xls file","er"); return; }
     showMsg("⏳ Reading file…","inf");
-    var reader = new FileReader();
-    reader.onerror = function(){ showMsg("❌ Could not read the file.","er"); };
-    reader.onload  = function(ev){
+    var reader=new FileReader();
+    reader.onerror=function(){ showMsg("❌ Could not read the file.","er"); };
+    reader.onload=function(ev){
       try{
-        if(typeof XLSX==="undefined"){ showMsg("❌ SheetJS library not loaded. Check your internet connection.","er"); return; }
-        var wb = XLSX.read(ev.target.result, {type:"array"});
-        var sn = wb.SheetNames[0];
+        if(typeof XLSX==="undefined"){ showMsg("❌ SheetJS library not loaded.","er"); return; }
+        var wb=XLSX.read(ev.target.result,{type:"array"});
+        var sn=wb.SheetNames[0];
         for(var i=0;i<wb.SheetNames.length;i++){
-          if(/master\s*sheet/i.test(wb.SheetNames[i]) && !/2/.test(wb.SheetNames[i])){ sn=wb.SheetNames[i]; break; }
+          if(/master\s*sheet/i.test(wb.SheetNames[i])&&!/2/.test(wb.SheetNames[i])){ sn=wb.SheetNames[i]; break; }
         }
-        var rows = XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:""});
-        var parsed = parseRows(rows);
-        if(parsed.length < 5){ showMsg("⚠️ Only "+parsed.length+" rows parsed. Check the sheet format.","er"); return; }
-        DATA = parsed;
-        try{ localStorage.setItem(LS_KEY, JSON.stringify(DATA)); }catch(ex){}
-        renderStats(); renderTeams(); renderTop10(); renderAwards();
+        var rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:""});
+        var result=parseRows(rows);
+        var parsed=result.data;
+        var newTA=result.teamAvgs;
+        if(parsed.length<5){ showMsg("⚠️ Only "+parsed.length+" rows parsed. Check the sheet format.","er"); return; }
+        DATA=parsed;
+        // Apply parsed team avgs; fallback to computing from individual KMs if column not found
+        Object.keys(TMETA).forEach(function(team){
+          if(newTA[team]){
+            TEAM_AVGS[team]=newTA[team];
+          } else {
+            if(!TEAM_AVGS[team]) TEAM_AVGS[team]=[0,0,0,0,0];
+            for(var w=0;w<5;w++){
+              var members=DATA.filter(function(p){return p.team===team;});
+              var sum=members.reduce(function(acc,p){return acc+(p.w[w]||0);},0);
+              if(sum>0) TEAM_AVGS[team][w]=sum/TMETA[team].n;
+            }
+          }
+        });
+        try{
+          localStorage.setItem(LS_KEY,JSON.stringify(DATA));
+          localStorage.setItem(LS_KEY+"_ta",JSON.stringify(TEAM_AVGS));
+        }catch(ex){}
+        renderStats(); renderTeams(); renderTop10(); renderParticipants(); renderAwards();
         showMsg("✅ Loaded "+parsed.length+" participants from \""+sn+"\"","ok");
       }catch(err){ showMsg("❌ Error: "+err.message,"er"); }
     };
     reader.readAsArrayBuffer(file);
   }
 
+  // parseRows — returns {data, teamAvgs}
+  // teamAvgs reads directly from Excel's "Total of Wx avg kms" columns
   function parseRows(rows){
-    var res=[], hr=-1, ec=-1, tc=-1, wc=[-1,-1,-1,-1,-1];
+    var res=[], hr=-1, ec=-1, tc=-1;
+    var wc=[-1,-1,-1,-1,-1], avgCols=[-1,-1,-1,-1,-1];
+    var teamSeen={}, newTA={};
+
     for(var r=0;r<Math.min(rows.length,20);r++){
       var row=rows[r];
       for(var c=0;c<row.length;c++){
         var v=String(row[c]).toLowerCase().trim();
         if(v==="employee"||v==="name"){ ec=c; hr=r; }
         if(v==="manager"||v==="team") tc=c;
-        if(/week\s*1|km.*week.*1|1st\s*june/i.test(v) && wc[0]<0) wc[0]=c;
-        if(/week\s*2|km.*week.*2|8th\s*june/i.test(v)  && wc[1]<0) wc[1]=c;
-        if(/week\s*3|km.*week.*3|15th\s*june/i.test(v) && wc[2]<0) wc[2]=c;
-        if(/week\s*4|km.*week.*4|22nd\s*june/i.test(v) && wc[3]<0) wc[3]=c;
-        if(/week\s*5|km.*week.*5|29th\s*june/i.test(v) && wc[4]<0) wc[4]=c;
+        // Individual KM columns
+        if(/week\s*1|km.*week.*1|1st\s*june/i.test(v)  && wc[0]<0) wc[0]=c;
+        if(/week\s*2|km.*week.*2|8th\s*june/i.test(v)   && wc[1]<0) wc[1]=c;
+        if(/week\s*3|km.*week.*3|15th\s*june/i.test(v)  && wc[2]<0) wc[2]=c;
+        if(/week\s*4|km.*week.*4|22nd\s*june/i.test(v)  && wc[3]<0) wc[3]=c;
+        if(/week\s*5|km.*week.*5|29th\s*june/i.test(v)  && wc[4]<0) wc[4]=c;
+        // "Total of W1 avg kms" columns — authoritative team avg
+        if(/total.*w1.*avg/i.test(v) && avgCols[0]<0) avgCols[0]=c;
+        if(/total.*w2.*avg/i.test(v) && avgCols[1]<0) avgCols[1]=c;
+        if(/total.*w3.*avg/i.test(v) && avgCols[2]<0) avgCols[2]=c;
+        if(/total.*w4.*avg/i.test(v) && avgCols[3]<0) avgCols[3]=c;
+        if(/total.*w5.*avg/i.test(v) && avgCols[4]<0) avgCols[4]=c;
       }
       if(hr>=0) break;
     }
     if(ec<0) ec=2;
     if(tc<0) tc=1;
-    if(wc[0]<0) wc=[3,5,8,11,14];
+    if(wc[0]<0)     wc=[3,5,8,11,14];
+    if(avgCols[0]<0) avgCols=[4,7,10,13,16];
+
     for(var r=hr+1;r<rows.length;r++){
       var row=rows[r];
       var nm=String(row[ec]||"").trim();
       var tm=String(row[tc]||"").trim();
       if(!nm||nm.length<3) continue;
       var nt=tm;
-      if(/aero|fc.?ec|crash/i.test(tm))    nt="Aero, FC/EC, Crash & PM";
+      if(/aero|fc.?ec|crash/i.test(tm))   nt="Aero, FC/EC, Crash & PM";
       else if(/mbs|ctt/i.test(tm))         nt="MBS & CTT";
       else if(/durability|nvh/i.test(tm))  nt="Durability & NVH";
+
+      // First row of each team → capture pre-computed team avg from Excel
+      if(!teamSeen[nt]){
+        teamSeen[nt]=true;
+        newTA[nt]=[0,0,0,0,0];
+        avgCols.forEach(function(ci,wi){
+          if(ci>=0&&ci<row.length){
+            var n=parseFloat(String(row[ci]||"").replace(/[^\d.]/g,""));
+            if(!isNaN(n)&&n>0) newTA[nt][wi]=n;
+          }
+        });
+      }
+
       var km=wc.map(function(ci){
         var n=parseFloat(String(row[ci]||"").replace(/[^\d.]/g,""));
         return isNaN(n)?0:n;
       });
       res.push({name:nm, team:nt, w:km});
     }
-    return res;
+    return {data:res, teamAvgs:newTA};
   }
 
   function doExport(){
     showMsg("⏳ Generating export…","inf");
     try{
-      var html = document.documentElement.outerHTML;
+      var html=document.documentElement.outerHTML;
       var sm="// @@KMQ_DATA_START@@", em="// @@KMQ_DATA_END@@";
       var si=html.indexOf(sm), ei=html.indexOf(em);
-      if(si>=0 && ei>=0){
-        html = html.substring(0,si+sm.length)+
-               "\nvar DEFAULT_DATA = "+JSON.stringify(DATA,null,2)+";\n"+
-               html.substring(ei);
+      if(si>=0&&ei>=0){
+        html=html.substring(0,si+sm.length)+
+             "\nvar DEFAULT_DATA = "+JSON.stringify(DATA,null,2)+";\n"+
+             "var DEFAULT_TEAM_AVGS = "+JSON.stringify(TEAM_AVGS,null,2)+";\n"+
+             html.substring(ei);
       }
       var blob=new Blob(["<!DOCTYPE html>\n"+html],{type:"text/html;charset=utf-8"});
       var url=URL.createObjectURL(blob);
@@ -666,15 +828,17 @@ function bindAdmin(){
       a.href=url; a.download="kmquest_leaderboard.html";
       document.body.appendChild(a); a.click();
       document.body.removeChild(a); URL.revokeObjectURL(url);
-      showMsg("✅ Downloaded! Commit 'kmquest_leaderboard.html' to your GitHub Pages repo.","ok");
+      showMsg("✅ Downloaded! Rename to index.html and commit to GitHub Pages.","ok");
     }catch(err){ showMsg("❌ Export failed: "+err.message,"er"); }
   }
 
   function doReset(){
     if(!confirm("Reset all data to default Week 1 values?")) return;
     DATA=clone(DEFAULT_DATA);
-    try{ localStorage.removeItem(LS_KEY); }catch(ex){}
-    renderStats(); renderTeams(); renderTop10(); renderAwards();
+    TEAM_AVGS=clone(typeof DEFAULT_TEAM_AVGS!=='undefined'?DEFAULT_TEAM_AVGS:{});
+    Object.keys(TMETA).forEach(function(k){ if(!TEAM_AVGS[k]) TEAM_AVGS[k]=[0,0,0,0,0]; });
+    try{ localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_KEY+"_ta"); }catch(ex){}
+    renderStats(); renderTeams(); renderTop10(); renderParticipants(); renderAwards();
     showMsg("✅ Data reset to default (Week 1).","ok");
   }
 }
