@@ -138,6 +138,7 @@
   .smsg.ok{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
   .smsg.er{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
   .smsg.inf{background:var(--blue-bg);color:#1e40af;border:1px solid #bfdbfe}
+  .smsg.warn{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
   .ap-btns{display:flex;gap:10px;flex-wrap:wrap}
   .btn-exp{flex:1;min-width:150px;padding:10px;background:var(--green);color:#fff;border:none;border-radius:var(--rs);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s}
   .btn-exp:hover{background:#047857}
@@ -145,6 +146,17 @@
   .btn-rst:hover{background:#fee2e2}
   .btn-lo{padding:10px 16px;background:#f1f5f9;color:var(--muted);border:1px solid var(--border);border-radius:var(--rs);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
   .btn-lo:hover{background:var(--border)}
+  /* ─── WORKFLOW STEPS ─── */
+  .steps{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+  .step{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-radius:var(--rs);font-size:12px;line-height:1.5}
+  .step.done{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46}
+  .step.active{background:var(--blue-bg);border:1px solid #bfdbfe;color:#1e40af;font-weight:600}
+  .step.pending{background:#f8fafc;border:1px solid var(--border);color:var(--muted)}
+  .step-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;margin-top:1px}
+  .step.done .step-num{background:#059669;color:#fff}
+  .step.active .step-num{background:var(--blue);color:#fff}
+  .step.pending .step-num{background:#e2e8f0;color:#64748b}
+  /* ─── END WORKFLOW STEPS ─── */
   .ap-hint{font-size:11px;color:var(--light);margin-top:14px;line-height:1.6}
   .ftr{background:#1e293b;color:#475569;text-align:center;padding:28px 20px;font-size:12px;letter-spacing:.3px}
   .ftr strong{color:#64748b}
@@ -276,6 +288,24 @@
       <h3>🛠️ Admin Panel</h3>
       <button class="ap-cl" id="apCloseBtn">✕ Close</button>
     </div>
+
+    <!-- ─── WORKFLOW STEPS ─── -->
+    <div class="steps" id="workflowSteps">
+      <div class="step active" id="stepUpload">
+        <div class="step-num">1</div>
+        <div><strong>Upload Excel</strong> — drag &amp; drop your updated .xlsx below</div>
+      </div>
+      <div class="step pending" id="stepExport">
+        <div class="step-num">2</div>
+        <div><strong>HTML auto-downloads</strong> — save the file <em>kmquest_leaderboard.html</em></div>
+      </div>
+      <div class="step pending" id="stepDeploy">
+        <div class="step-num">3</div>
+        <div><strong>Deploy to GitHub Pages</strong> — commit &amp; push the downloaded file → everyone sees the update</div>
+      </div>
+    </div>
+    <!-- ─── END WORKFLOW STEPS ─── -->
+
     <div class="uz" id="uz">
       <span class="uico">📊</span>
       <p>Drag &amp; drop your Excel file here<br>or <strong id="browseBtn">browse to choose</strong></p>
@@ -287,7 +317,11 @@
       <button class="btn-rst" id="resetBtn">🔄 Reset</button>
       <button class="btn-lo" id="logoutBtn">Logout</button>
     </div>
-    <p class="ap-hint">Each week: upload the new Excel → click Export Updated HTML → commit the downloaded file to GitHub Pages.</p>
+    <p class="ap-hint">
+      ⚠️ <strong>Uploading Excel only updates your browser.</strong>
+      The HTML file that auto-downloads must be committed to GitHub Pages so all users see the new data.
+      Use "Export Updated HTML" any time to re-download without re-uploading.
+    </p>
   </div>
 </div>
 
@@ -364,7 +398,7 @@ var ADMIN_PW = "KMAdmin2026";
 var LS_KEY   = "kmq_v2";
 var TMETA = {
   "Durability & NVH":        {c:"#1d4ed8", bg:"#eff6ff", n:18},
-  "Aero, FC/EC, Crash & PM": {c:"#059669", bg:"#ecfdf5", n:14},
+  "Aero, FC/EC, Crash & PM": {c:"#059669", bg:"#ecfdf5", n:13},
   "MBS & CTT":               {c:"#d97706", bg:"#fffbeb", n:25}
 };
 var WEEKS = [
@@ -384,9 +418,6 @@ function setText(id,v){ var el=$(id); if(el) el.textContent=v; }
 function clone(d){ return JSON.parse(JSON.stringify(d)); }
 function kmTotal(p){ var t=0; for(var i=0;i<5;i++) t+=(p.w[i]||0); return t; }
 
-// ─── HELPER 1: per-week effective averages ────────────────────────────────────
-// TEAM_AVGS[w] > 0  →  use stored value
-// otherwise         →  compute from member KMs / team size
 function getEffectiveTeamAvgs(team) {
   var stored  = TEAM_AVGS[team] || [0,0,0,0,0];
   var members = DATA.filter(function(p){ return p.team === team; });
@@ -397,11 +428,6 @@ function getEffectiveTeamAvgs(team) {
   });
 }
 
-// ─── HELPER 2: rolling average of weekly averages ────────────────────────────
-// Formula:  (W1_avg + W2_avg + … + Wn_avg) / n   where n = active weeks only
-// W1 only  → W1_avg / 1
-// W1 + W2  → (W1_avg + W2_avg) / 2
-// W1+W2+W3 → (W1_avg + W2_avg + W3_avg) / 3  … etc.
 function getTeamRollingAvg(team) {
   var eff    = getEffectiveTeamAvgs(team);
   var active = eff.filter(function(v){ return v > 0; });
@@ -448,17 +474,11 @@ function renderStats(){
   setText("totalKm", t>0 ? t.toFixed(1) : "—");
 }
 
-// ─── TEAM LEADERBOARD ────────────────────────────────────────────────────────
-// Big number shown  = getTeamRollingAvg()  = (W1_avg+…+Wn_avg) / n
-// Rank decided by   = same rolling average (higher = better)
-// Per-week breakdown shown below the big number
 function renderTeams(){
-  // Raw totals for the "Total walked" badge
   var tot={};
   Object.keys(TMETA).forEach(function(k){ tot[k]=0; });
   DATA.forEach(function(p){ if(tot.hasOwnProperty(p.team)) tot[p.team]+=kmTotal(p); });
 
-  // Build rolling avg and effective per-week arrays for every team
   var rollingMap={};
   var wkMap={};
   Object.keys(TMETA).forEach(function(k){
@@ -466,7 +486,6 @@ function renderTeams(){
     rollingMap[k] = getTeamRollingAvg(k);
   });
 
-  // Sort by rolling avg descending
   var sorted = Object.keys(rollingMap).sort(function(a,b){
     return rollingMap[b] - rollingMap[a];
   });
@@ -474,7 +493,6 @@ function renderTeams(){
   var medals=["🥇","🥈","🥉"], rcs=["r1","r2","r3"];
   var wLabels=["W1","W2","W3","W4","W5"];
 
-  // Build label for the rolling avg formula e.g. "(W1+W2)/2"
   function rollingLabel(eff){
     var parts=[];
     eff.forEach(function(v,wi){ if(v>0) parts.push(wLabels[wi]); });
@@ -490,7 +508,6 @@ function renderTeams(){
     var eff    = wkMap[t];
     var pct    = (rolling / maxRolling) * 100;
 
-    // Per-week breakdown chips
     var wkParts=[];
     eff.forEach(function(v,wi){
       if(v>0) wkParts.push(
@@ -503,17 +520,12 @@ function renderTeams(){
     html+='<div class="tc-medal">'+medals[i]+'</div>';
     html+='<div class="tc-name"><span class="tc-dot" style="background:'+m.c+'"></span>'+t+'</div>';
     html+='<div class="tc-sub">'+m.n+' members &nbsp;·&nbsp; Rank #'+(i+1)+'</div>';
-
-    // ── Big number = rolling avg ──
     html+='<div class="tc-km" style="color:'+m.c+'">'+rolling.toFixed(2)+'</div>';
     html+='<div class="tc-kml">Overall Avg KM / Person &nbsp;<span style="font-size:9px;opacity:.7">'+rollingLabel(eff)+'</span></div>';
-
-    // Per-week avg breakdown
     if(wkParts.length){
       html+='<div class="tc-wkavg" style="font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.9">'+
             wkParts.join(' &nbsp;·&nbsp; ')+'</div>';
     }
-
     html+='<div class="tc-avg">Total walked: <strong style="display:inline-block;background:'+m.bg+
           ';color:'+m.c+';font-size:13px;padding:2px 9px;border-radius:20px;border:1.5px solid '+
           m.c+'40;margin-left:4px">'+km.toFixed(1)+' km</strong></div>';
@@ -550,7 +562,6 @@ function renderTop10(){
   $("t10body").innerHTML=html||'<div style="padding:20px;text-align:center;color:var(--muted)">No data loaded</div>';
 }
 
-// ─── ALL PARTICIPANTS ────────────────────────────────────────────────────────
 function renderParticipants(){
   var teams=Object.keys(TMETA);
   var navHtml="", contentHtml="";
@@ -570,15 +581,11 @@ function renderParticipants(){
     members.sort(function(a,b){return kmTotal(b)-kmTotal(a);});
 
     var effectiveAvgs = getEffectiveTeamAvgs(team);
-
-    // ── Rolling avg for footer Total column ──
-    // (W1_avg + W2_avg + … + Wn_avg) / n  for active weeks only
-    var activeAvgs  = effectiveAvgs.filter(function(v){ return v > 0; });
-    var rollingAvg  = activeAvgs.length > 0
+    var activeAvgs    = effectiveAvgs.filter(function(v){ return v > 0; });
+    var rollingAvg    = activeAvgs.length > 0
       ? parseFloat((activeAvgs.reduce(function(a,b){return a+b;},0) / activeAvgs.length).toFixed(2))
       : 0;
 
-    // Build formula label e.g. "(W1+W2)/2" for tooltip
     var wLabels=["W1","W2","W3","W4","W5"];
     var activeParts=[];
     effectiveAvgs.forEach(function(v,wi){ if(v>0) activeParts.push(wLabels[wi]); });
@@ -608,8 +615,6 @@ function renderParticipants(){
     });
 
     tbl+='</tbody>';
-
-    // Footer: per-week avg cells + rolling avg in Total column
     tbl+='<tfoot><tr>';
     tbl+='<td></td>';
     tbl+='<td style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:'+m.c+'">Team Avg / Person</td>';
@@ -617,11 +622,9 @@ function renderParticipants(){
       var av=effectiveAvgs[w];
       tbl+='<td style="font-weight:700;color:'+m.c+'">'+(av>0 ? av.toFixed(2) : '—')+'</td>';
     }
-    // Total = rolling avg with formula shown as tooltip
     tbl+='<td style="font-weight:800;color:'+m.c+'" title="'+formulaLabel+'">'+
          (rollingAvg > 0 ? rollingAvg.toFixed(2) : '—')+'</td>';
     tbl+='</tr></tfoot>';
-
     tbl+='</table></div>';
     contentHtml+='<div id="tpane'+ti+'" style="display:'+(isFirst?'block':'none')+'">'+tbl+'</div>';
   });
@@ -654,15 +657,22 @@ function renderAwards(){
   DATA.forEach(function(p){ var t=kmTotal(p); if(t>topKm){topKm=t;topP=p;} });
   if(topP){ setText("aw1n",topP.name); setText("aw1v",topKm.toFixed(1)+" km total"); }
 
-  // Best Team = highest rolling avg
   var best=Object.keys(TMETA).sort(function(a,b){
     return getTeamRollingAvg(b) - getTeamRollingAvg(a);
   })[0];
   if(best){
-    var bestRolling = getTeamRollingAvg(best);
     setText("aw3n", best);
-    setText("aw3v", bestRolling.toFixed(2)+" km overall avg / person");
+    setText("aw3v", getTeamRollingAvg(best).toFixed(2)+" km overall avg / person");
   }
+}
+
+// ─── WORKFLOW STEP HELPER ────────────────────────────────────────────────────
+function setWorkflowStep(active){
+  var ids=["stepUpload","stepExport","stepDeploy"];
+  ids.forEach(function(id,i){
+    var el=$(id); if(!el) return;
+    el.className="step "+(i+1<active?"done":i+1===active?"active":"pending");
+  });
 }
 
 function bindAdmin(){
@@ -678,7 +688,7 @@ function bindAdmin(){
   function hideMsg(){ smsg.style.display="none"; }
 
   $("fabBtn").onclick=function(){
-    if(loggedIn){ hideMsg(); apOv.classList.add("show"); }
+    if(loggedIn){ hideMsg(); setWorkflowStep(1); apOv.classList.add("show"); }
     else{ pwIn.value=""; pwErr.style.display="none"; pwOv.classList.add("show"); setTimeout(function(){ pwIn.focus(); },80); }
   };
 
@@ -687,7 +697,7 @@ function bindAdmin(){
 
   function doLogin(){
     if(pwIn.value===ADMIN_PW){
-      loggedIn=true; pwOv.classList.remove("show"); hideMsg(); apOv.classList.add("show");
+      loggedIn=true; pwOv.classList.remove("show"); hideMsg(); setWorkflowStep(1); apOv.classList.add("show");
     } else { pwErr.style.display="block"; pwIn.value=""; pwIn.focus(); }
   }
   $("pwOkBtn").onclick=doLogin;
@@ -744,74 +754,19 @@ function bindAdmin(){
           localStorage.setItem(LS_KEY,JSON.stringify(DATA));
           localStorage.setItem(LS_KEY+"_ta",JSON.stringify(TEAM_AVGS));
         }catch(ex){}
+
         renderStats(); renderTeams(); renderTop10(); renderParticipants(); renderAwards();
-        showMsg("✅ Loaded "+parsed.length+" participants from \""+sn+"\"","ok");
+
+        setWorkflowStep(2);
+        showMsg("✅ Loaded "+parsed.length+" participants from \""+sn+"\". Downloading updated HTML…","ok");
+        setTimeout(function(){ doExport(); }, 800);
+
       }catch(err){ showMsg("❌ Error: "+err.message,"er"); }
     };
     reader.readAsArrayBuffer(file);
   }
 
-  function parseRows(rows){
-    var res=[], hr=-1, ec=-1, tc=-1;
-    var wc=[-1,-1,-1,-1,-1], avgCols=[-1,-1,-1,-1,-1];
-    var teamSeen={}, newTA={};
-
-    for(var r=0;r<Math.min(rows.length,20);r++){
-      var row=rows[r];
-      for(var c=0;c<row.length;c++){
-        var v=String(row[c]).toLowerCase().trim();
-        if(v==="employee"||v==="name"){ ec=c; hr=r; }
-        if(v==="manager"||v==="team") tc=c;
-        if(/week\s*1|km.*week.*1|1st\s*june/i.test(v)  && wc[0]<0) wc[0]=c;
-        if(/week\s*2|km.*week.*2|8th\s*june/i.test(v)   && wc[1]<0) wc[1]=c;
-        if(/week\s*3|km.*week.*3|15th\s*june/i.test(v)  && wc[2]<0) wc[2]=c;
-        if(/week\s*4|km.*week.*4|22nd\s*june/i.test(v)  && wc[3]<0) wc[3]=c;
-        if(/week\s*5|km.*week.*5|29th\s*june/i.test(v)  && wc[4]<0) wc[4]=c;
-        if(/total.*w1.*avg/i.test(v) && avgCols[0]<0) avgCols[0]=c;
-        if(/total.*w2.*avg/i.test(v) && avgCols[1]<0) avgCols[1]=c;
-        if(/total.*w3.*avg/i.test(v) && avgCols[2]<0) avgCols[2]=c;
-        if(/total.*w4.*avg/i.test(v) && avgCols[3]<0) avgCols[3]=c;
-        if(/total.*w5.*avg/i.test(v) && avgCols[4]<0) avgCols[4]=c;
-      }
-      if(hr>=0) break;
-    }
-    if(ec<0) ec=2;
-    if(tc<0) tc=1;
-    if(wc[0]<0)      wc=[3,5,8,11,14];
-    if(avgCols[0]<0) avgCols=[4,7,10,13,16];
-
-    for(var r=hr+1;r<rows.length;r++){
-      var row=rows[r];
-      var nm=String(row[ec]||"").trim();
-      var tm=String(row[tc]||"").trim();
-      if(!nm||nm.length<3) continue;
-      var nt=tm;
-      if(/aero|fc.?ec|crash/i.test(tm))   nt="Aero, FC/EC, Crash & PM";
-      else if(/mbs|ctt/i.test(tm))         nt="MBS & CTT";
-      else if(/durability|nvh/i.test(tm))  nt="Durability & NVH";
-
-      if(!teamSeen[nt]){
-        teamSeen[nt]=true;
-        newTA[nt]=[0,0,0,0,0];
-        avgCols.forEach(function(ci,wi){
-          if(ci>=0&&ci<row.length){
-            var n=parseFloat(String(row[ci]||"").replace(/[^\d.]/g,""));
-            if(!isNaN(n)&&n>0) newTA[nt][wi]=n;
-          }
-        });
-      }
-
-      var km=wc.map(function(ci){
-        var n=parseFloat(String(row[ci]||"").replace(/[^\d.]/g,""));
-        return isNaN(n)?0:n;
-      });
-      res.push({name:nm, team:nt, w:km});
-    }
-    return {data:res, teamAvgs:newTA};
-  }
-
   function doExport(){
-    showMsg("⏳ Generating export…","inf");
     try{
       var html=document.documentElement.outerHTML;
       var sm="// @@KMQ_DATA_START@@", em="// @@KMQ_DATA_END@@";
@@ -828,7 +783,9 @@ function bindAdmin(){
       a.href=url; a.download="kmquest_leaderboard.html";
       document.body.appendChild(a); a.click();
       document.body.removeChild(a); URL.revokeObjectURL(url);
-      showMsg("✅ Downloaded! Rename to index.html and commit to GitHub Pages.","ok");
+
+      setWorkflowStep(3);
+      showMsg("⬆️ HTML downloaded! Now commit kmquest_leaderboard.html to GitHub Pages — then everyone will see the updated data.","warn");
     }catch(err){ showMsg("❌ Export failed: "+err.message,"er"); }
   }
 
@@ -839,6 +796,7 @@ function bindAdmin(){
     Object.keys(TMETA).forEach(function(k){ if(!TEAM_AVGS[k]) TEAM_AVGS[k]=[0,0,0,0,0]; });
     try{ localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_KEY+"_ta"); }catch(ex){}
     renderStats(); renderTeams(); renderTop10(); renderParticipants(); renderAwards();
+    setWorkflowStep(1);
     showMsg("✅ Data reset to default (Week 1).","ok");
   }
 }
