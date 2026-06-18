@@ -15,12 +15,8 @@
     --shm:0 4px 12px rgba(0,0,0,.08);--shl:0 8px 28px rgba(0,0,0,.14)
   }
   body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
-
-  /* TOPBAR */
   .topbar{background:#0f172a;color:#475569;text-align:center;padding:7px 16px;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:500}
   .topbar span{color:#64748b}
-
-  /* HEADER */
   .hdr{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#0f2b4a 100%);padding:48px 24px 40px;text-align:center}
   .logo{width:72px;height:72px;background:linear-gradient(135deg,var(--blue),var(--green));border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:34px;box-shadow:0 8px 24px rgba(29,78,216,.35)}
   .hdr h1{font-size:52px;font-weight:900;color:#fff;letter-spacing:-2px;line-height:1}
@@ -28,23 +24,17 @@
   .hdr-sub{color:#64748b;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin:8px 0 18px}
   .date-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(29,78,216,.2);border:1px solid rgba(29,78,216,.35);color:#93c5fd;padding:7px 22px;border-radius:50px;font-size:13px;font-weight:600}
   .data-lbl{color:#475569;font-size:11px;margin-top:10px}
-
-  /* STATS BAR */
   .sbar{background:#fff;border-bottom:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);box-shadow:var(--sh)}
   .sitem{padding:22px 16px;text-align:center;border-right:1px solid var(--border)}
   .sitem:last-child{border-right:none}
   .sitem .sn{display:block;font-size:34px;font-weight:800;color:var(--blue);line-height:1}
   .sitem .sl{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:600;margin-top:4px}
-
-  /* CONTAINER */
   .wrap{max-width:1080px;margin:0 auto;padding:36px 20px}
   .sec{margin-bottom:40px}
   .sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border)}
   .sec-hd h2{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text)}
   .sec-hd h2 .ico{width:30px;height:30px;background:var(--blue-bg);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px}
   .sec-hd small{font-size:11px;color:var(--muted)}
-
-  /* TIMELINE */
   .timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
   .wk{background:var(--card);border:1.5px solid var(--border);border-radius:var(--rs);padding:14px 10px;text-align:center;transition:.2s}
   .wk.done{background:#f0fdf4;border-color:#86efac}
@@ -58,8 +48,6 @@
   .wk.done .ws{background:#dcfce7;color:#166534}
   .wk.live .ws{background:#dbeafe;color:#1e40af}
   .wk.upcoming .ws{background:#f1f5f9;color:#94a3b8}
-
-  /* TEAMS */
   .teams{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .tc{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:22px;box-shadow:var(--sh);position:relative;overflow:hidden;transition:.2s}
   .tc:hover{transform:translateY(-2px);box-shadow:var(--shm)}
@@ -71,13 +59,12 @@
   .tc-name{font-size:14px;font-weight:700;margin-bottom:2px}
   .tc-sub{font-size:11px;color:var(--muted);margin-bottom:16px}
   .tc-km{font-size:38px;font-weight:900;line-height:1}
-  .tc-kml{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:2px 0 12px}
+  .tc-kml{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:2px 0 4px}
+  .tc-wkavg{font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.7}
   .tc-avg{font-size:12px;color:var(--muted);margin-bottom:10px}
   .tc-avg strong{color:var(--text);font-size:13px}
   .pb{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
   .pbf{height:100%;border-radius:3px;transition:width 1s ease}
-
-  /* TOP 10 */
   .t10w{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
   .t10h{display:grid;grid-template-columns:52px 1fr 70px 110px 85px;background:#f8fafc;border-bottom:1px solid var(--border);padding:10px 16px;gap:8px}
   .t10h span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
@@ -100,13 +87,9 @@
   .kv{text-align:right;font-size:15px;font-weight:800;color:var(--text)}
   .kv small{display:block;font-size:10px;font-weight:400;color:var(--muted)}
   .t10hide{}
-
-  /* ── TABS (new) ── */
   .tabs-nav{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
   .tab-btn{padding:8px 20px;border:1.5px solid var(--border);border-radius:50px;font-size:12px;font-weight:600;cursor:pointer;background:var(--card);color:var(--muted);transition:.15s;font-family:inherit;white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
   .tab-btn:hover{transform:translateY(-1px);box-shadow:var(--sh)}
-
-  /* ── PARTICIPANT TABLE (new) ── */
   .pov{overflow-x:auto;border-radius:var(--r);box-shadow:var(--sh)}
   .plist{width:100%;border-collapse:collapse;background:var(--card);font-size:13px;min-width:520px}
   .plist thead th{background:#f8fafc;padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
@@ -117,28 +100,20 @@
   .plist tbody tr:hover td{background:#fafbfc}
   .plist tfoot td{padding:10px 14px;background:#f8fafc;border-top:2px solid var(--border)}
   .plist tfoot td:nth-child(n+3){text-align:right;font-variant-numeric:tabular-nums}
-
-  /* AWARDS */
-  .awards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .awards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
   .aw{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px 20px;text-align:center;box-shadow:var(--sh);transition:.2s}
   .aw:hover{transform:translateY(-2px);box-shadow:var(--shm)}
   .aw-ico{font-size:40px;display:block;margin-bottom:10px}
   .aw-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px}
   .aw-nm{font-size:17px;font-weight:800;color:var(--text);margin-bottom:5px;min-height:26px}
   .aw-val{font-size:12px;color:var(--muted);line-height:1.4}
-
-  /* FAB */
   .fab{position:fixed;bottom:24px;right:24px;z-index:900}
   .fab-btn{background:#1e293b;color:#fff;border:none;padding:11px 20px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:0 4px 16px rgba(0,0,0,.22);transition:.2s;font-family:inherit}
   .fab-btn:hover{background:#0f172a;transform:translateY(-1px);box-shadow:0 6px 22px rgba(0,0,0,.28)}
-
-  /* OVERLAYS */
   .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:20px}
   .ov.show{display:flex}
   .ov2{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:flex-end;justify-content:center}
   .ov2.show{display:flex}
-
-  /* PW BOX */
   .pw-box{background:var(--card);border-radius:var(--r);padding:32px;max-width:380px;width:100%;box-shadow:var(--shl)}
   .pw-box h3{font-size:18px;font-weight:800;margin-bottom:6px}
   .pw-box p{font-size:13px;color:var(--muted);margin-bottom:20px}
@@ -149,8 +124,6 @@
   .btn-p:hover{background:#1e40af}
   .btn-s{width:100%;padding:10px;background:#f8fafc;color:var(--muted);border:1px solid var(--border);border-radius:var(--rs);font-size:14px;font-weight:500;cursor:pointer;margin-top:8px;font-family:inherit}
   .btn-s:hover{background:var(--border)}
-
-  /* ADMIN PANEL */
   .ap{background:var(--card);border-radius:16px 16px 0 0;padding:28px 28px 36px;width:100%;max-width:560px;box-shadow:0 -4px 24px rgba(0,0,0,.12);max-height:82vh;overflow-y:auto}
   .ap-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
   .ap-hd h3{font-size:16px;font-weight:800}
@@ -173,13 +146,9 @@
   .btn-lo{padding:10px 16px;background:#f1f5f9;color:var(--muted);border:1px solid var(--border);border-radius:var(--rs);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
   .btn-lo:hover{background:var(--border)}
   .ap-hint{font-size:11px;color:var(--light);margin-top:14px;line-height:1.6}
-
-  /* FOOTER */
   .ftr{background:#1e293b;color:#475569;text-align:center;padding:28px 20px;font-size:12px;letter-spacing:.3px}
   .ftr strong{color:#64748b}
   .ftr .motto{color:#334155;font-style:italic;margin-top:6px}
-
-  /* RESPONSIVE */
   @media(max-width:860px){
     .teams{grid-template-columns:1fr}
     .awards{grid-template-columns:1fr}
@@ -220,7 +189,6 @@
 
 <div class="wrap">
 
-  <!-- TIMELINE -->
   <div class="sec">
     <div class="sec-hd"><h2><span class="ico">📅</span>Challenge Timeline</h2></div>
     <div class="timeline">
@@ -232,16 +200,14 @@
     </div>
   </div>
 
-  <!-- TEAM LEADERBOARD -->
   <div class="sec">
     <div class="sec-hd">
       <h2><span class="ico">🏆</span>Team Leaderboard</h2>
-      <small>Ranked by Avg KM / Person</small>
+      <small>Ranked by Overall Avg KM / Person</small>
     </div>
     <div class="teams" id="teamsGrid"></div>
   </div>
 
-  <!-- TOP 10 -->
   <div class="sec">
     <div class="sec-hd">
       <h2><span class="ico">⭐</span>Top 10 Performers</h2>
@@ -249,17 +215,14 @@
     </div>
     <div class="t10w">
       <div class="t10h">
-        <span>Rank</span>
-        <span>Participant</span>
-        <span class="t10hide">Weeks</span>
-        <span class="t10hide">Progress</span>
+        <span>Rank</span><span>Participant</span>
+        <span class="t10hide">Weeks</span><span class="t10hide">Progress</span>
         <span>Total KM</span>
       </div>
       <div id="t10body"></div>
     </div>
   </div>
 
-  <!-- ALL PARTICIPANTS (new) -->
   <div class="sec">
     <div class="sec-hd">
       <h2><span class="ico">👥</span>All Participants</h2>
@@ -269,7 +232,6 @@
     <div id="teamTabsContent"></div>
   </div>
 
-  <!-- AWARDS -->
   <div class="sec">
     <div class="sec-hd"><h2><span class="ico">🎖️</span>Special Awards</h2></div>
     <div class="awards">
@@ -280,31 +242,23 @@
         <div class="aw-val" id="aw1v">Highest total KM in June</div>
       </div>
       <div class="aw">
-        <span class="aw-ico">🔥</span>
-        <div class="aw-lbl">Consistency Champion</div>
-        <div class="aw-nm" id="aw2n">—</div>
-        <div class="aw-val" id="aw2v">Most consistent across all 5 weeks</div>
-      </div>
-      <div class="aw">
         <span class="aw-ico">🏅</span>
         <div class="aw-lbl">Best Team Award</div>
         <div class="aw-nm" id="aw3n">—</div>
-        <div class="aw-val" id="aw3v">Highest avg KM / person</div>
+        <div class="aw-val" id="aw3v">Highest overall avg KM / person</div>
       </div>
     </div>
   </div>
 
-</div><!-- /wrap -->
+</div>
 
 <div class="ftr">
   <strong>KM QUEST 2026</strong> · Daimler Truck · MB Validation &amp; Special Vehicles · Cultural Committee
   <div class="motto">"Walk more. Feel better. Win together. 🏆"</div>
 </div>
 
-<!-- FAB -->
 <div class="fab"><button class="fab-btn" id="fabBtn">🔧 Admin</button></div>
 
-<!-- PASSWORD OVERLAY -->
 <div class="ov" id="pwOv">
   <div class="pw-box">
     <h3>🔐 Admin Access</h3>
@@ -316,7 +270,6 @@
   </div>
 </div>
 
-<!-- ADMIN PANEL OVERLAY -->
 <div class="ov2" id="apOv">
   <div class="ap">
     <div class="ap-hd">
@@ -407,7 +360,6 @@ var DEFAULT_TEAM_AVGS = {
 };
 // @@KMQ_DATA_END@@
 
-// ─── CONFIG ────────────────────────────────────────────────
 var ADMIN_PW = "KMAdmin2026";
 var LS_KEY   = "kmq_v2";
 var TMETA = {
@@ -423,18 +375,41 @@ var WEEKS = [
   {id:"wk5",s:new Date(2026,5,29),e:new Date(2026,5,30)}
 ];
 
-// ─── STATE ─────────────────────────────────────────────────
 var DATA      = [];
 var TEAM_AVGS = {};
 var loggedIn  = false;
 
-// ─── HELPERS ───────────────────────────────────────────────
 function $(id){ return document.getElementById(id); }
 function setText(id,v){ var el=$(id); if(el) el.textContent=v; }
 function clone(d){ return JSON.parse(JSON.stringify(d)); }
 function kmTotal(p){ var t=0; for(var i=0;i<5;i++) t+=(p.w[i]||0); return t; }
 
-// ─── INIT ──────────────────────────────────────────────────
+// ─── HELPER 1: per-week effective averages ────────────────────────────────────
+// TEAM_AVGS[w] > 0  →  use stored value
+// otherwise         →  compute from member KMs / team size
+function getEffectiveTeamAvgs(team) {
+  var stored  = TEAM_AVGS[team] || [0,0,0,0,0];
+  var members = DATA.filter(function(p){ return p.team === team; });
+  return stored.map(function(av, wi) {
+    if (av > 0) return av;
+    var s = members.reduce(function(acc, p){ return acc + (p.w[wi] || 0); }, 0);
+    return s > 0 ? parseFloat((s / TMETA[team].n).toFixed(2)) : 0;
+  });
+}
+
+// ─── HELPER 2: rolling average of weekly averages ────────────────────────────
+// Formula:  (W1_avg + W2_avg + … + Wn_avg) / n   where n = active weeks only
+// W1 only  → W1_avg / 1
+// W1 + W2  → (W1_avg + W2_avg) / 2
+// W1+W2+W3 → (W1_avg + W2_avg + W3_avg) / 3  … etc.
+function getTeamRollingAvg(team) {
+  var eff    = getEffectiveTeamAvgs(team);
+  var active = eff.filter(function(v){ return v > 0; });
+  if (active.length === 0) return 0;
+  var sum = active.reduce(function(a, b){ return a + b; }, 0);
+  return parseFloat((sum / active.length).toFixed(2));
+}
+
 function init(){
   var saved=null;
   try{ saved=JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){}
@@ -444,7 +419,6 @@ function init(){
   try{ savedTA=JSON.parse(localStorage.getItem(LS_KEY+"_ta")); }catch(e){}
   var defTA = (typeof DEFAULT_TEAM_AVGS!=='undefined') ? DEFAULT_TEAM_AVGS : {};
   TEAM_AVGS = (savedTA && typeof savedTA==='object' && !Array.isArray(savedTA)) ? savedTA : clone(defTA);
-  // Ensure every team has an entry
   Object.keys(TMETA).forEach(function(k){ if(!TEAM_AVGS[k]) TEAM_AVGS[k]=[0,0,0,0,0]; });
 
   renderTimeline();
@@ -456,7 +430,6 @@ function init(){
   bindAdmin();
 }
 
-// ─── TIMELINE ──────────────────────────────────────────────
 function renderTimeline(){
   var now=new Date();
   WEEKS.forEach(function(w){
@@ -469,47 +442,87 @@ function renderTimeline(){
   });
 }
 
-// ─── STATS ─────────────────────────────────────────────────
 function renderStats(){
   var t=0;
   DATA.forEach(function(p){ t+=kmTotal(p); });
   setText("totalKm", t>0 ? t.toFixed(1) : "—");
 }
 
-// ─── TEAMS ─────────────────────────────────────────────────
-// Uses TEAM_AVGS (from Excel's "Total of Wx avg kms" column) as the authoritative avg
+// ─── TEAM LEADERBOARD ────────────────────────────────────────────────────────
+// Big number shown  = getTeamRollingAvg()  = (W1_avg+…+Wn_avg) / n
+// Rank decided by   = same rolling average (higher = better)
+// Per-week breakdown shown below the big number
 function renderTeams(){
+  // Raw totals for the "Total walked" badge
   var tot={};
   Object.keys(TMETA).forEach(function(k){ tot[k]=0; });
   DATA.forEach(function(p){ if(tot.hasOwnProperty(p.team)) tot[p.team]+=kmTotal(p); });
 
-  // Cumulative avg per team = sum of weekly avgs stored in TEAM_AVGS
-  var avgMap={};
+  // Build rolling avg and effective per-week arrays for every team
+  var rollingMap={};
+  var wkMap={};
   Object.keys(TMETA).forEach(function(k){
-    avgMap[k]=(TEAM_AVGS[k]||[0,0,0,0,0]).reduce(function(a,b){return a+b;},0);
+    wkMap[k]      = getEffectiveTeamAvgs(k);
+    rollingMap[k] = getTeamRollingAvg(k);
   });
 
-  var sorted=Object.keys(avgMap).sort(function(a,b){return avgMap[b]-avgMap[a];});
-  var maxAvg=avgMap[sorted[0]]||1;
+  // Sort by rolling avg descending
+  var sorted = Object.keys(rollingMap).sort(function(a,b){
+    return rollingMap[b] - rollingMap[a];
+  });
+  var maxRolling = rollingMap[sorted[0]] || 1;
   var medals=["🥇","🥈","🥉"], rcs=["r1","r2","r3"];
+  var wLabels=["W1","W2","W3","W4","W5"];
+
+  // Build label for the rolling avg formula e.g. "(W1+W2)/2"
+  function rollingLabel(eff){
+    var parts=[];
+    eff.forEach(function(v,wi){ if(v>0) parts.push(wLabels[wi]); });
+    if(parts.length===0) return "";
+    return "("+parts.join("+")+") / "+parts.length;
+  }
+
   var html="";
   sorted.forEach(function(t,i){
-    var m=TMETA[t], km=tot[t], avg=avgMap[t];
-    var pct=(avg/maxAvg)*100;
+    var m      = TMETA[t];
+    var km     = tot[t];
+    var rolling= rollingMap[t];
+    var eff    = wkMap[t];
+    var pct    = (rolling / maxRolling) * 100;
+
+    // Per-week breakdown chips
+    var wkParts=[];
+    eff.forEach(function(v,wi){
+      if(v>0) wkParts.push(
+        '<span style="opacity:.85">'+wLabels[wi]+':</span> '+
+        '<strong style="color:'+m.c+'">'+v.toFixed(2)+'</strong>'
+      );
+    });
+
     html+='<div class="tc '+rcs[i]+'">';
     html+='<div class="tc-medal">'+medals[i]+'</div>';
     html+='<div class="tc-name"><span class="tc-dot" style="background:'+m.c+'"></span>'+t+'</div>';
     html+='<div class="tc-sub">'+m.n+' members &nbsp;·&nbsp; Rank #'+(i+1)+'</div>';
-    html+='<div class="tc-km" style="color:'+m.c+'">'+avg.toFixed(2)+'</div>';
-    html+='<div class="tc-kml">Avg KM / Person</div>';
-    html+='<div class="tc-avg">Total: <strong style="display:inline-block;background:'+m.bg+';color:'+m.c+';font-size:13px;padding:2px 9px;border-radius:20px;border:1.5px solid '+m.c+'40;margin-left:4px">'+km.toFixed(1)+' km</strong></div>';
+
+    // ── Big number = rolling avg ──
+    html+='<div class="tc-km" style="color:'+m.c+'">'+rolling.toFixed(2)+'</div>';
+    html+='<div class="tc-kml">Overall Avg KM / Person &nbsp;<span style="font-size:9px;opacity:.7">'+rollingLabel(eff)+'</span></div>';
+
+    // Per-week avg breakdown
+    if(wkParts.length){
+      html+='<div class="tc-wkavg" style="font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.9">'+
+            wkParts.join(' &nbsp;·&nbsp; ')+'</div>';
+    }
+
+    html+='<div class="tc-avg">Total walked: <strong style="display:inline-block;background:'+m.bg+
+          ';color:'+m.c+';font-size:13px;padding:2px 9px;border-radius:20px;border:1.5px solid '+
+          m.c+'40;margin-left:4px">'+km.toFixed(1)+' km</strong></div>';
     html+='<div class="pb"><div class="pbf" style="width:'+pct.toFixed(1)+'%;background:'+m.c+'"></div></div>';
     html+='</div>';
   });
   $("teamsGrid").innerHTML=html;
 }
 
-// ─── TOP 10 ────────────────────────────────────────────────
 function renderTop10(){
   var people=DATA.map(function(p){
     var total=kmTotal(p), active=0;
@@ -537,7 +550,7 @@ function renderTop10(){
   $("t10body").innerHTML=html||'<div style="padding:20px;text-align:center;color:var(--muted)">No data loaded</div>';
 }
 
-// ─── ALL PARTICIPANTS (new) ─────────────────────────────────
+// ─── ALL PARTICIPANTS ────────────────────────────────────────────────────────
 function renderParticipants(){
   var teams=Object.keys(TMETA);
   var navHtml="", contentHtml="";
@@ -546,7 +559,6 @@ function renderParticipants(){
     var m=TMETA[team];
     var isFirst=(ti===0);
 
-    // Tab button
     navHtml+='<button class="tab-btn" id="ttab'+ti+'" onclick="switchTab('+ti+')" '+
       'style="'+(isFirst
         ? 'background:'+m.c+';color:#fff;border-color:'+m.c
@@ -554,15 +566,30 @@ function renderParticipants(){
       '<span style="width:8px;height:8px;border-radius:50%;display:inline-block;background:'+(isFirst?'#fff':m.c)+'"></span>'+
       team+'</button>';
 
-    // Participant rows sorted by total KM desc
     var members=DATA.filter(function(p){return p.team===team;});
     members.sort(function(a,b){return kmTotal(b)-kmTotal(a);});
-    var avgs=TEAM_AVGS[team]||[0,0,0,0,0];
+
+    var effectiveAvgs = getEffectiveTeamAvgs(team);
+
+    // ── Rolling avg for footer Total column ──
+    // (W1_avg + W2_avg + … + Wn_avg) / n  for active weeks only
+    var activeAvgs  = effectiveAvgs.filter(function(v){ return v > 0; });
+    var rollingAvg  = activeAvgs.length > 0
+      ? parseFloat((activeAvgs.reduce(function(a,b){return a+b;},0) / activeAvgs.length).toFixed(2))
+      : 0;
+
+    // Build formula label e.g. "(W1+W2)/2" for tooltip
+    var wLabels=["W1","W2","W3","W4","W5"];
+    var activeParts=[];
+    effectiveAvgs.forEach(function(v,wi){ if(v>0) activeParts.push(wLabels[wi]); });
+    var formulaLabel = activeParts.length
+      ? "("+activeParts.join("+")+") / "+activeParts.length
+      : "";
 
     var tbl='<div class="pov"><table class="plist">';
     tbl+='<thead><tr>';
     tbl+='<th style="width:36px">#</th><th>Name</th>';
-    tbl+='<th>W1</th><th>W2</th><th>W3</th><th>W4</th><th>W5</th><th>Total</th>';
+    tbl+='<th>W1</th><th>W2</th><th>W3</th><th>W4</th><th>W5</th><th>Avg</th>';
     tbl+='</tr></thead><tbody>';
 
     members.forEach(function(p,idx){
@@ -582,19 +609,20 @@ function renderParticipants(){
 
     tbl+='</tbody>';
 
-    // Footer: team avg row (from TEAM_AVGS — authoritative Excel values)
+    // Footer: per-week avg cells + rolling avg in Total column
     tbl+='<tfoot><tr>';
     tbl+='<td></td>';
     tbl+='<td style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:'+m.c+'">Team Avg / Person</td>';
     for(var w=0;w<5;w++){
-      var av=avgs[w];
-      tbl+='<td style="font-weight:700;color:'+m.c+'">'+(av>0?av.toFixed(2):'—')+'</td>';
+      var av=effectiveAvgs[w];
+      tbl+='<td style="font-weight:700;color:'+m.c+'">'+(av>0 ? av.toFixed(2) : '—')+'</td>';
     }
-    var cumAvg=avgs.reduce(function(a,b){return a+b;},0);
-    tbl+='<td style="font-weight:800;color:'+m.c+'">'+cumAvg.toFixed(2)+'</td>';
+    // Total = rolling avg with formula shown as tooltip
+    tbl+='<td style="font-weight:800;color:'+m.c+'" title="'+formulaLabel+'">'+
+         (rollingAvg > 0 ? rollingAvg.toFixed(2) : '—')+'</td>';
     tbl+='</tr></tfoot>';
-    tbl+='</table></div>';
 
+    tbl+='</table></div>';
     contentHtml+='<div id="tpane'+ti+'" style="display:'+(isFirst?'block':'none')+'">'+tbl+'</div>';
   });
 
@@ -602,7 +630,6 @@ function renderParticipants(){
   $("teamTabsContent").innerHTML=contentHtml;
 }
 
-// Global — called from inline onclick in tab buttons
 function switchTab(ti){
   var teams=Object.keys(TMETA);
   teams.forEach(function(team,idx){
@@ -622,45 +649,22 @@ function switchTab(ti){
   });
 }
 
-// ─── AWARDS ────────────────────────────────────────────────
 function renderAwards(){
-  // Top Walker
   var topP=null, topKm=0;
   DATA.forEach(function(p){ var t=kmTotal(p); if(t>topKm){topKm=t;topP=p;} });
   if(topP){ setText("aw1n",topP.name); setText("aw1v",topKm.toFixed(1)+" km total"); }
 
-  // Best Team — use TEAM_AVGS (matches team leaderboard ranking)
+  // Best Team = highest rolling avg
   var best=Object.keys(TMETA).sort(function(a,b){
-    var avgA=(TEAM_AVGS[a]||[0,0,0,0,0]).reduce(function(x,y){return x+y;},0);
-    var avgB=(TEAM_AVGS[b]||[0,0,0,0,0]).reduce(function(x,y){return x+y;},0);
-    return avgB-avgA;
+    return getTeamRollingAvg(b) - getTeamRollingAvg(a);
   })[0];
   if(best){
-    var bestAvg=(TEAM_AVGS[best]||[0,0,0,0,0]).reduce(function(x,y){return x+y;},0);
-    setText("aw3n",best);
-    setText("aw3v",bestAvg.toFixed(2)+" km avg / person");
-  }
-
-  // Consistency (requires ≥2 weeks of data)
-  var wkCount=0;
-  for(var w=0;w<5;w++){ if(DATA.some(function(p){return (p.w[w]||0)>0;})) wkCount++; }
-  if(wkCount>=2){
-    var bestP=null, bestCV=Infinity;
-    DATA.forEach(function(p){
-      var vals=p.w.filter(function(v){return v>0;});
-      if(vals.length<2) return;
-      var mean=vals.reduce(function(a,b){return a+b;},0)/vals.length;
-      var sd=Math.sqrt(vals.reduce(function(a,b){return a+Math.pow(b-mean,2);},0)/vals.length);
-      var cv=sd/mean;
-      if(cv<bestCV){bestCV=cv;bestP=p;}
-    });
-    if(bestP){ setText("aw2n",bestP.name); setText("aw2v","CV: "+(bestCV*100).toFixed(1)+"% — lower = more consistent"); }
-  } else {
-    setText("aw2n","—"); setText("aw2v","Available after Week 2 data is uploaded");
+    var bestRolling = getTeamRollingAvg(best);
+    setText("aw3n", best);
+    setText("aw3v", bestRolling.toFixed(2)+" km overall avg / person");
   }
 }
 
-// ─── ADMIN ─────────────────────────────────────────────────
 function bindAdmin(){
   var pwOv   = $("pwOv");
   var apOv   = $("apOv");
@@ -722,19 +726,20 @@ function bindAdmin(){
         var newTA=result.teamAvgs;
         if(parsed.length<5){ showMsg("⚠️ Only "+parsed.length+" rows parsed. Check the sheet format.","er"); return; }
         DATA=parsed;
-        // Apply parsed team avgs; fallback to computing from individual KMs if column not found
+
         Object.keys(TMETA).forEach(function(team){
-          if(newTA[team]){
-            TEAM_AVGS[team]=newTA[team];
-          } else {
-            if(!TEAM_AVGS[team]) TEAM_AVGS[team]=[0,0,0,0,0];
-            for(var w=0;w<5;w++){
-              var members=DATA.filter(function(p){return p.team===team;});
-              var sum=members.reduce(function(acc,p){return acc+(p.w[w]||0);},0);
-              if(sum>0) TEAM_AVGS[team][w]=sum/TMETA[team].n;
+          if(!TEAM_AVGS[team]) TEAM_AVGS[team]=[0,0,0,0,0];
+          var tMbrs=DATA.filter(function(p){return p.team===team;});
+          for(var w=0;w<5;w++){
+            if(newTA[team]&&newTA[team][w]>0){
+              TEAM_AVGS[team][w]=newTA[team][w];
+            } else {
+              var wSum=tMbrs.reduce(function(acc,p){return acc+(p.w[w]||0);},0);
+              if(wSum>0) TEAM_AVGS[team][w]=parseFloat((wSum/TMETA[team].n).toFixed(2));
             }
           }
         });
+
         try{
           localStorage.setItem(LS_KEY,JSON.stringify(DATA));
           localStorage.setItem(LS_KEY+"_ta",JSON.stringify(TEAM_AVGS));
@@ -746,8 +751,6 @@ function bindAdmin(){
     reader.readAsArrayBuffer(file);
   }
 
-  // parseRows — returns {data, teamAvgs}
-  // teamAvgs reads directly from Excel's "Total of Wx avg kms" columns
   function parseRows(rows){
     var res=[], hr=-1, ec=-1, tc=-1;
     var wc=[-1,-1,-1,-1,-1], avgCols=[-1,-1,-1,-1,-1];
@@ -759,13 +762,11 @@ function bindAdmin(){
         var v=String(row[c]).toLowerCase().trim();
         if(v==="employee"||v==="name"){ ec=c; hr=r; }
         if(v==="manager"||v==="team") tc=c;
-        // Individual KM columns
         if(/week\s*1|km.*week.*1|1st\s*june/i.test(v)  && wc[0]<0) wc[0]=c;
         if(/week\s*2|km.*week.*2|8th\s*june/i.test(v)   && wc[1]<0) wc[1]=c;
         if(/week\s*3|km.*week.*3|15th\s*june/i.test(v)  && wc[2]<0) wc[2]=c;
         if(/week\s*4|km.*week.*4|22nd\s*june/i.test(v)  && wc[3]<0) wc[3]=c;
         if(/week\s*5|km.*week.*5|29th\s*june/i.test(v)  && wc[4]<0) wc[4]=c;
-        // "Total of W1 avg kms" columns — authoritative team avg
         if(/total.*w1.*avg/i.test(v) && avgCols[0]<0) avgCols[0]=c;
         if(/total.*w2.*avg/i.test(v) && avgCols[1]<0) avgCols[1]=c;
         if(/total.*w3.*avg/i.test(v) && avgCols[2]<0) avgCols[2]=c;
@@ -776,7 +777,7 @@ function bindAdmin(){
     }
     if(ec<0) ec=2;
     if(tc<0) tc=1;
-    if(wc[0]<0)     wc=[3,5,8,11,14];
+    if(wc[0]<0)      wc=[3,5,8,11,14];
     if(avgCols[0]<0) avgCols=[4,7,10,13,16];
 
     for(var r=hr+1;r<rows.length;r++){
@@ -789,7 +790,6 @@ function bindAdmin(){
       else if(/mbs|ctt/i.test(tm))         nt="MBS & CTT";
       else if(/durability|nvh/i.test(tm))  nt="Durability & NVH";
 
-      // First row of each team → capture pre-computed team avg from Excel
       if(!teamSeen[nt]){
         teamSeen[nt]=true;
         newTA[nt]=[0,0,0,0,0];
@@ -843,7 +843,6 @@ function bindAdmin(){
   }
 }
 
-// ─── START ─────────────────────────────────────────────────
 window.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
