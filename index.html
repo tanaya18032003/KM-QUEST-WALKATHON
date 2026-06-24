@@ -279,7 +279,7 @@
   </div>
 </div>
 
-<div class="ov2 show" id="apOv">
+<div class="ov2" id="apOv">
   <div class="ap">
     <div class="ap-hd">
       <h3>🛠️ Admin Panel</h3>
@@ -304,7 +304,7 @@
       <p>Drag &amp; drop your Excel file here<br>or <strong id="browseBtn">browse to choose</strong></p>
     </div>
     <input type="file" id="fileIn" accept=".xlsx,.xls" style="display:none">
-    <div class="smsg ok" id="smsg" style="display: block;">✅ Loaded 56 participants from "Master Sheet". Downloading updated HTML…</div>
+    <div class="smsg ok" id="smsg" style="display: none;">✅ Loaded 56 participants from "Master Sheet". Downloading updated HTML…</div>
     <div class="ap-btns">
       <button class="btn-exp" id="exportBtn">⬇️ Export Updated HTML</button>
       <button class="btn-rst" id="resetBtn">🔄 Reset</button>
@@ -1232,7 +1232,6 @@ function renderAwards(){
   }
 }
 
-// ─── PARSE ROWS ──────────────────────────────────────────────────────────────
 function parseRows(rows) {
   var data = [];
   var teamAvgs = {};
@@ -1322,7 +1321,6 @@ function parseRows(rows) {
 
   return { data: data, teamAvgs: teamAvgs };
 }
-// ─── END PARSE ROWS ──────────────────────────────────────────────────────────
 
 function setWorkflowStep(active){
   var ids=["stepUpload","stepExport","stepDeploy"];
@@ -1422,16 +1420,22 @@ function bindAdmin(){
     reader.readAsArrayBuffer(file);
   }
 
-  // ─── EXPORT (FIX: strip 'show' from overlays before snapshotting HTML) ────
+  // ─── EXPORT: close overlays in DOM → snapshot → restore ─────────────────
   function doExport(){
     try{
-      var html = document.documentElement.outerHTML;
-      // ── Remove 'show' class from both overlays so they never auto-open ──
-      html = html.replace(/(<div[^>]*id="apOv"[^>]*)\bshow\b/g, '$1');
-      html = html.replace(/(<div[^>]*id="pwOv"[^>]*)\bshow\b/g, '$1');
-      // ── Also hide any status message baked in ──
-      html = html.replace(/(<div[^>]*id="smsg"[^>]*)style="display:block"/g, '$1style="display:none"');
+      // 1. Strip overlays & status msg from the live DOM before snapshotting
+      var apEl=$("apOv"), pwEl=$("pwOv"), msgEl=$("smsg");
+      var apWas=apEl.classList.contains("show");
+      apEl.classList.remove("show");   // ← guaranteed gone from outerHTML
+      pwEl.classList.remove("show");
+      msgEl.style.display="none";
 
+      var html=document.documentElement.outerHTML;
+
+      // 2. Restore UI so admin can keep working
+      if(apWas) apEl.classList.add("show");
+
+      // 3. Bake latest data into the <script> block
       var sm="// @@KMQ_DATA_START@@", em="// @@KMQ_DATA_END@@";
       var si=html.indexOf(sm), ei=html.indexOf(em);
       if(si>=0&&ei>=0){
@@ -1450,7 +1454,7 @@ function bindAdmin(){
       showMsg("⬆️ HTML downloaded! Now commit kmquest_leaderboard.html to GitHub Pages — then everyone will see the updated data.","warn");
     }catch(err){ showMsg("❌ Export failed: "+err.message,"er"); }
   }
-  // ─── END EXPORT FIX ──────────────────────────────────────────────────────
+  // ─── END EXPORT ──────────────────────────────────────────────────────────
 
   function doReset(){
     if(!confirm("Reset all data to default Week 2 values?")) return;
